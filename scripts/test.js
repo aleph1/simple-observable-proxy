@@ -1,4 +1,4 @@
-const { observe, unobserve } = require('./index.js');
+const { observe, unobserve } = require('../index.js');
 
 function createState() {
   return {

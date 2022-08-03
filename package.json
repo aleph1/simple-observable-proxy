@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "build": "node build.mjs",
+    "build": "node scripts/build.mjs",
     "test": "jest"
   },
   "repository": {
