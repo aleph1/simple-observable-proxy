@@ -1,3 +1,4 @@
+import browserify from "browserify";
 import {minify} from "terser";
 import fs from 'fs';
 
@@ -8,4 +9,4 @@ const result = await minify(
 	}
 );
 
-fs.writeFileSync("dist/observable.min.js", result.code);
+fs.writeFileSync("dist/simple-observable-proxy.js", result.code);
