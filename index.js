@@ -4,7 +4,7 @@ const revocablesByProxy = new WeakMap();
 const toNotifyOnTick = [];
 
 const deferNotify = callbacks => {
-	toNotifyOnTick.push(callbacks);
+	if(callbacks.length) toNotifyOnTick.push(callbacks);
 }
 
 export const observe = (objOrArrOrProxy, callback, options = {}) => {
@@ -48,12 +48,14 @@ export const observe = (objOrArrOrProxy, callback, options = {}) => {
 }
 
 const onTick = () => {
-	[...new Set(toNotifyOnTick.flat(Infinity))].forEach(callback => {
-		callback();
-	});
-	toNotifyOnTick.length = 0;
+	if(toNotifyOnTick.length) {
+		new Set(toNotifyOnTick.flat(Infinity)).forEach(callback => {
+			callback();
+		});
+		toNotifyOnTick.length = 0;
+	}
 	window.requestAnimationFrame(onTick);
-};
+}
 
 onTick();
 
