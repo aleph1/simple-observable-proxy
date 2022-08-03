@@ -1,0 +1,33 @@
+{
+  "name": "@aleph-1/simple-observable-proxy",
+  "version": "0.0.1",
+  "description": "Simple observable ES6 proxy.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aleph1/simple-observable-proxy.git"
+  },
+  "keywords": [
+    "proxy",
+    "observable",
+    "reactive",
+    "es6"
+  ],
+  "author": "Daniel Barber / Aleph1 Technologies Inc.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aleph1/simple-observable-proxy/issues"
+  },
+  "homepage": "https://github.com/aleph1/simple-observable-proxy#readme",
+  "devDependencies": {
+    "jest": "^28.1.3",
+    "terser": "^5.14.2"
+  }
+}
