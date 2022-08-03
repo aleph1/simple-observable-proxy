@@ -1,2 +1,2 @@
-# simple-observable-proxy
+# Simple Observable Proxy
 Simple observable proxies for JavaScript.
