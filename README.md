@@ -52,3 +52,22 @@ const sharedStateCallback2 = () => {
 observe(sharedState, sharedStateCallback1);
 observe(sharedState, sharedStateCallback2);
 ```
+
+## Implementation
+
+TBC
+
+## Methods
+
+### observe(objectOrArray, callbackFn, options = {})
+Converts objectOrArray to a proxy, and subscribes to additions/modifications/deletions using callbackFn.
+
+Returns a proxy of objectOrArray.
+
+### unobserve(objectOrArrayProxy, callbackFn)
+Removes the callbackFn for objectOrArrayProxy if it exists.
+
+Returns true if the callbackFn was removed, and false if callbackFn was not registered for that objectOrArrayProxy.
+
+### revoke(objectOrArrayProxy)
+Revokes the proxy if it was created using observe with options.revokable set to be true.
