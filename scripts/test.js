@@ -1,4 +1,4 @@
-const { observe, unobserve, revoke } = require('../index.js');
+import { observe, unobserve, revoke } from '../index.js';
 
 function createState() {
   return {
