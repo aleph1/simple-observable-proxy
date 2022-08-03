@@ -1,4 +1,4 @@
-const { observe, unobserve } = require('../index.js');
+const { observe, unobserve, revoke } = require('../index.js');
 
 function createState() {
   return {
@@ -207,5 +207,17 @@ test('Deferred callback when object is reobserved', done => {
   jest.advanceTimersByTime(FRAME_TIME);
   expect(callback).toHaveBeenCalledTimes(2);
   expect(state.string).toEqual('test4');
+  done();
+});
+
+test('Error when observable has been revoked', done => {
+  const callback = jest.fn();
+  const state = observe(createState(), callback, {
+    revocable: true
+  });
+  revoke(state);
+  expect(() => {
+    state.string = 'test2';
+  }).toThrow(TypeError);
   done();
 });
