@@ -12,23 +12,26 @@ $ npm install simple-observable-proxy
 Objects and arrays can also be observed and unobserved.
 
 ```js
-const { observe, unobserve } = require('simple-observable-proxy');
+import { observe, unobserve } from 'simple-observable-proxy';
 const stateChange = () => {
   console.log('stateChange()');
-};
+}
 const state = observe({
-	test: 'test'
+  test: 'test'
 }, stateChange);
-
-state.test = 'test2'; // stateChange() will be called
-unobserve(state, stateChange);
-state.test = 'test3'; // stateChange() will not be called
+state.test = 'test2'; // stateChange() will be called on RAF
+window.requestAnimationFrame(() => {
+  console.log('state.test : ' + state.test);
+  unobserve(state, stateChange);
+  state.test = 'test3'; // stateChange() will not be called
+  console.log('state.test : ' + state.test);
+});
 ```
 
 It is possible to have multiple callbacks on the same observable. This can be useful in specific cases such as multiple components sharing state.
 
 ```js
-const { observe } = require('simple-observable-proxy');
+import { observe } from 'simple-observable-proxy';
 // create 
 const sharedState = observe([
   {
@@ -58,12 +61,12 @@ observe(sharedState, sharedStateCallback2);
 `observe` allows support for revocable proxies by passing `options.revocable` as `true`.
 
 ```js
-const { observe, revoke } = require('simple-observable-proxy');
+import { observe, revoke } from 'simple-observable-proxy';
 const stateChange = () => {
   console.log('stateChange()');
 };
 const state = observe({
-	test: 'test'
+  test: 'test'
 }, stateChange);
 state.test = 'test2'; // stateChange() will be called
 revoke(state);
