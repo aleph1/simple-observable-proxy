@@ -1,4 +1,3 @@
-import browserify from "browserify";
 import {minify} from "terser";
 import fs from 'fs';
 
