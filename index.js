@@ -7,7 +7,7 @@ const deferNotify = callbacks => {
 	toNotifyOnTick.push(callbacks);
 }
 
-const observe = (objOrArrOrProxy, callback, options = {}) => {
+export const observe = (objOrArrOrProxy, callback, options = {}) => {
 	// determine if objOrArr has already been proxified
 	let proxy = proxiesBySource.get(objOrArrOrProxy) || callbacksByProxy.has(objOrArrOrProxy) && objOrArrOrProxy;
 	let callbacks = proxy ? callbacksByProxy.get(proxy) : [];
@@ -57,23 +57,21 @@ const onTick = () => {
 
 onTick();
 
-module.exports = {
-	observe,
-	unobserve(objOrArrOrProxy, callback){
-		let callbacks = callbacksByProxy.get(proxiesBySource.get(objOrArrOrProxy) || objOrArrOrProxy);
-		if(callbacks) {
-			const index = callbacks.indexOf(callback);
-			if(index !== -1) callbacks.splice(index, 1);
-		}
-	},
-	revoke(objOrArrOrProxy) {
-		const proxy = proxiesBySource.get(objOrArrOrProxy) || objOrArrOrProxy;
-		const revoke = revocablesByProxy.get(proxy);
-		if(revoke) {
-			revoke();
-			revocablesByProxy.delete(proxy);
-			return true;
-		}
-		return false;		
+export const unobserve = (objOrArrOrProxy, callback) => {
+	let callbacks = callbacksByProxy.get(proxiesBySource.get(objOrArrOrProxy) || objOrArrOrProxy);
+	if(callbacks) {
+		const index = callbacks.indexOf(callback);
+		if(index !== -1) callbacks.splice(index, 1);
 	}
+}
+
+export const revoke = (objOrArrOrProxy) => {
+	const proxy = proxiesBySource.get(objOrArrOrProxy) || objOrArrOrProxy;
+	const revoke = revocablesByProxy.get(proxy);
+	if(revoke) {
+		revoke();
+		revocablesByProxy.delete(proxy);
+		return true;
+	}
+	return false;		
 }
