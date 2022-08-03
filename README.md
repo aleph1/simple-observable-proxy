@@ -1,5 +1,5 @@
 # Simple Observable Proxy
-Simple observable proxies for JavaScript. Fully tested to work with objects, arrays, and primitive types. Includes options for revocable proxies and deep observation. Only 500 bytes gzipped.
+Simple observable proxies for JavaScript, using deferred callbacks to notify of changes. Fully tested to work with objects, arrays, and primitive types. Includes options for revocable proxies and deep observation. Approximately 500 bytes gzipped.
 
 ## Installation
 
@@ -9,8 +9,10 @@ $ npm install simple-observable-proxy
 
 ## Usage
 
+Objects and arrays can also be observed and unobserved.
+
 ```js
-const { observe, unobserve, revoke } = require('simple-observable-proxy');
+const { observe, unobserve } = require('simple-observable-proxy');
 const stateChange = () => {
   console.log('stateChange()');
 };
@@ -18,27 +20,33 @@ const state = observe({
 	test: 'test'
 }, stateChange);
 
-state.test = 'test2';
+state.test = 'test2'; // stateChange() will be called
+unobserve(state, stateChange);
+state.test = 'test3'; // stateChange() will not be called
+```
 
-// it is possible to have multiple callbacks on the same observable
-// useful in cases such as multiple components sharing state
+It is possible to have multiple callbacks on the same observable. This can be useful in specific cases such as multiple components sharing state.
+
+```js
+const { observe } = require('simple-observable-proxy');
+// create 
 const sharedState = observe([
-	{
-		id: 1,
-		name: 'My first book.'
-	},
-	{
-		id: 2,
-		name: 'My second book.'
-	}
+  {
+    id: 1,
+    name: 'My first book.'
+  },
+  {
+    id: 2,
+    name: 'My second book.'
+  }
 ]);
 
 const sharedStateCallback1 = () => {
-	console.log('sharedStateCallback1()');
+  console.log('sharedStateCallback1()');
 };
 
 const sharedStateCallback2 = () => {
-	console.log('sharedStateCallback2()');
+  console.log('sharedStateCallback2()');
 };
 
 observe(sharedState, sharedStateCallback1);
