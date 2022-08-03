@@ -1,16 +1,12 @@
 const proxiesBySource = new WeakMap();
 const callbacksByProxy = new WeakMap();
 const revocablesByProxy = new WeakMap();
-const toNotifyOnTick = [];
+const modifiedProxies = new Set();
 
-const deferNotify = callbacks => {
-	if(callbacks.length) toNotifyOnTick.push(callbacks);
-}
-
-export const observe = (objOrArrOrProxy, callback, options = {}) => {
+export function observe(objOrArrOrProxy, callback, options = {}) {
 	// determine if objOrArr has already been proxified
 	let proxy = proxiesBySource.get(objOrArrOrProxy) || callbacksByProxy.has(objOrArrOrProxy) && objOrArrOrProxy;
-	let callbacks = proxy ? callbacksByProxy.get(proxy) : [];
+	let callbacks = proxy && callbacksByProxy.get(proxy) || [];
 	if(typeof callback === 'function' && !callbacks.includes(callback)) callbacks.push(callback);
 	if(!proxy) {
 		const handler = {
@@ -21,14 +17,14 @@ export const observe = (objOrArrOrProxy, callback, options = {}) => {
 			set(target, key, value) {
 				if(target[key] !== value) {
 					target[key] = value;
-					deferNotify(callbacks);
+					modifiedProxies.add(proxy);
 				}
 				return true;
 			},
 			deleteProperty(target, prop) {
 				if (prop in target) {
 					delete target[prop];
-					deferNotify(callbacks);
+					modifiedProxies.add(proxy);
 					return true;
 				}
 				return false;
@@ -47,19 +43,7 @@ export const observe = (objOrArrOrProxy, callback, options = {}) => {
 	return proxy;
 }
 
-const onTick = () => {
-	if(toNotifyOnTick.length) {
-		new Set(toNotifyOnTick.flat(Infinity)).forEach(callback => {
-			callback();
-		});
-		toNotifyOnTick.length = 0;
-	}
-	window.requestAnimationFrame(onTick);
-}
-
-onTick();
-
-export const unobserve = (objOrArrOrProxy, callback) => {
+export function unobserve(objOrArrOrProxy, callback) {
 	let callbacks = callbacksByProxy.get(proxiesBySource.get(objOrArrOrProxy) || objOrArrOrProxy);
 	if(callbacks) {
 		const index = callbacks.indexOf(callback);
@@ -67,7 +51,7 @@ export const unobserve = (objOrArrOrProxy, callback) => {
 	}
 }
 
-export const revoke = (objOrArrOrProxy) => {
+export function revoke(objOrArrOrProxy) {
 	const proxy = proxiesBySource.get(objOrArrOrProxy) || objOrArrOrProxy;
 	const revoke = revocablesByProxy.get(proxy);
 	if(revoke) {
@@ -77,3 +61,14 @@ export const revoke = (objOrArrOrProxy) => {
 	}
 	return false;		
 }
+
+function onTick(){
+	modifiedProxies.forEach(proxy => {
+		const callbacks = callbacksByProxy.get(proxy);
+		callbacks && callbacks.forEach(callback => callback());
+	});
+	modifiedProxies.clear();
+	window.requestAnimationFrame(onTick);
+}
+
+onTick();
