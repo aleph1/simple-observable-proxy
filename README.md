@@ -1,10 +1,18 @@
 # Simple Observable Proxy
-Simple observable proxies for JavaScript, using deferred callbacks to notify of changes. Fully tested to work with objects, arrays, and primitive types. Includes options for revocable proxies and deep observation. Approximately 500 bytes gzipped.
+Simple observable proxies for JavaScript, using requestAnimationFrame to defer callbacks and notify of changes. Observables can be shallow or deep objects or arrays, and all manipulation of objects (adding, editing, or deleting keys) and arrays (direct modification using \[\], methods, or changing length) is detected. Includes options for revocable proxies.
+
+Simple Observable Proxy is intended to be a very small library (approximately 500 bytes gzipped) that serves to notify that a proxy has changed, but does not report on differences between current and prior state.
 
 ## Installation
 
+Node
 ```
 $ npm install simple-observable-proxy
+```
+
+Browser
+```
+import { observe, unobserve, revoke } from 'simple-observable-proxy';
 ```
 
 ## Basic Usage
@@ -73,10 +81,6 @@ revoke(state);
 state.test = 'test3'; // will throw an error
 ```
 
-## Implementation
-
-TBC
-
 ## Methods
 
 ### observe(objectOrArray, callbackFn, options = {})
@@ -91,3 +95,25 @@ Returns true if the callbackFn was removed, and false if callbackFn was not regi
 
 ### revoke(objectOrArrayProxy)
 Revokes the proxy if it was created using observe with options.revokable set to be true.
+
+## Implementation
+
+Internally Simple Observable Proxy maintains WeakMaps of observables (object and array) mapped to their respective Proxy, as well as a WeakMap of Proxy instances mapped to an array of callbacks. Whenever a proxy is modified it is added to a notification queue that is called once per requestAnimationFrame.
+
+Even when multiple values are modified on an observable proxy only one notification is sent per callback on the next requestAnimationFrame. For example:
+
+```js
+const stateChange = () => {
+  console.log('state changed')
+};
+const state = observe({
+  test: 'test',
+  test2: 'test2'
+}, stateChange);
+state.test = 'test2'; // modify key
+state.nested = [1, 2, 3]; // added key
+delete state.test2; // delete key
+
+// depsite multiple changes to state, stateChange will 
+// only be called once on next requestAnimationFrame
+```
