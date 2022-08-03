@@ -7,7 +7,7 @@ Simple observable proxies for JavaScript, using deferred callbacks to notify of 
 $ npm install simple-observable-proxy
 ```
 
-## Usage
+## Basic Usage
 
 Objects and arrays can also be observed and unobserved.
 
@@ -51,6 +51,23 @@ const sharedStateCallback2 = () => {
 
 observe(sharedState, sharedStateCallback1);
 observe(sharedState, sharedStateCallback2);
+```
+
+## Advanced Usage
+
+`observe` allows support for revocable proxies by passing `options.revocable` as `true`.
+
+```js
+const { observe, revoke } = require('simple-observable-proxy');
+const stateChange = () => {
+  console.log('stateChange()');
+};
+const state = observe({
+	test: 'test'
+}, stateChange);
+state.test = 'test2'; // stateChange() will be called
+revoke(state);
+state.test = 'test3'; // will throw an error
 ```
 
 ## Implementation
