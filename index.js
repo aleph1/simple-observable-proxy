@@ -7,14 +7,6 @@ const deferNotify = callbacks => {
 	toNotifyOnTick.push(callbacks);
 }
 
-const onTick = callbacks => {
-	[...new Set(toNotifyOnTick.flat(Math.INFINTY))].forEach(callback => {
-		callback();
-	});
-	toNotifyOnTick.length = 0;
-	window.requestAnimationFrame(onTick);
-}
-
 const observe = (objOrArrOrProxy, callback, options = {}) => {
 	// determine if objOrArr has already been proxified
 	let proxy = proxiesBySource.get(objOrArrOrProxy) || callbacksByProxy.has(objOrArrOrProxy) && objOrArrOrProxy;
@@ -24,13 +16,7 @@ const observe = (objOrArrOrProxy, callback, options = {}) => {
 		const handler = {
 			get(target, key) {
 				const prop = target[key];
-				// return if property not found
-				if (typeof prop !== 'undefined') {
-					if (prop && typeof prop === 'object') {
-						target[key] = observe(prop, callback, options);
-					}
-					return target[key];
-				}
+				return prop && typeof prop === 'object' ? target[key] = observe(prop, callback, options) : prop;
 			},
 			set(target, key, value) {
 				if(target[key] !== value) {
@@ -61,27 +47,33 @@ const observe = (objOrArrOrProxy, callback, options = {}) => {
 	return proxy;
 }
 
-const unobserve = (objOrArrOrProxy, callback) => {
-	const callbacks = callbacksByProxy.get(proxiesBySource.get(objOrArrOrProxy) || objOrArrOrProxy);
-	if(callbacks) {
-		const index = callbacks.indexOf(callback);
-		if(index !== -1) callbacks.splice(index, 1);
-	}
+const onTick = () => {
+	[...new Set(toNotifyOnTick.flat(Infinity))].forEach(callback => {
+		callback();
+	});
+	toNotifyOnTick.length = 0;
+	window.requestAnimationFrame(onTick);
 };
 
-const revoke = (objOrArrOrProxy) => {
-	const revoke = revocablesByProxy.get(proxiesBySource.get(objOrArrOrProxy) || objOrArrOrProxy);
-	if(revoke) {
-		revoke();
-		return true;
-	}
-	return false;
-};
-
-window.requestAnimationFrame(onTick);
+onTick();
 
 module.exports = {
 	observe,
-	unobserve,
-	revoke	
+	unobserve(objOrArrOrProxy, callback){
+		let callbacks = callbacksByProxy.get(proxiesBySource.get(objOrArrOrProxy) || objOrArrOrProxy);
+		if(callbacks) {
+			const index = callbacks.indexOf(callback);
+			if(index !== -1) callbacks.splice(index, 1);
+		}
+	},
+	revoke(objOrArrOrProxy) {
+		const proxy = proxiesBySource.get(objOrArrOrProxy) || objOrArrOrProxy;
+		const revoke = revocablesByProxy.get(proxy);
+		if(revoke) {
+			revoke();
+			revocablesByProxy.delete(proxy);
+			return true;
+		}
+		return false;		
+	}
 }
