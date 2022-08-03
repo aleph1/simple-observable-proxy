@@ -18,47 +18,46 @@ const onTick = callbacks => {
 const observe = (objOrArrOrProxy, callback, options = {}) => {
 	// determine if objOrArr has already been proxified
 	let proxy = proxiesBySource.get(objOrArrOrProxy) || callbacksByProxy.has(objOrArrOrProxy) && objOrArrOrProxy;
-	let callbacks = proxy ? callbacksByProxy.get(proxy) : [callback];
-	if(proxy) {
-		if(!callbacks.includes(callback)) callbacks.push(callback);
-		return proxy;
-	}
-	const handler = {
-		get(target, key) {
-			const prop = target[key];
-			// return if property not found
-			if (typeof prop !== 'undefined') {
-				if (prop && typeof prop === 'object') {
-					target[key] = observe(prop, callback, options);
+	let callbacks = proxy ? callbacksByProxy.get(proxy) : [];
+	if(typeof callback === 'function' && !callbacks.includes(callback)) callbacks.push(callback);
+	if(!proxy) {
+		const handler = {
+			get(target, key) {
+				const prop = target[key];
+				// return if property not found
+				if (typeof prop !== 'undefined') {
+					if (prop && typeof prop === 'object') {
+						target[key] = observe(prop, callback, options);
+					}
+					return target[key];
 				}
-				return target[key];
-			}
-		},
-		set(target, key, value) {
-			if(target[key] !== value) {
-				target[key] = value;
-				deferNotify(callbacks);
-			}
-			return true;
-		},
-		deleteProperty(target, prop) {
-			if (prop in target) {
-				delete target[prop];
-				deferNotify(callbacks);
+			},
+			set(target, key, value) {
+				if(target[key] !== value) {
+					target[key] = value;
+					deferNotify(callbacks);
+				}
 				return true;
+			},
+			deleteProperty(target, prop) {
+				if (prop in target) {
+					delete target[prop];
+					deferNotify(callbacks);
+					return true;
+				}
+				return false;
 			}
-			return false;
 		}
+		if(options.revocable) {
+			proxy = Proxy.revocable(objOrArrOrProxy, handler);
+			revocablesByProxy.set(proxy.proxy, proxy.revoke);
+			proxy = proxy.proxy;
+		} else {
+			proxy = new Proxy(objOrArrOrProxy, handler);
+		}
+		proxiesBySource.set(objOrArrOrProxy, proxy);
+		callbacksByProxy.set(proxy, callbacks);
 	}
-	if(options.revocable) {
-		proxy = Proxy.revocable(objOrArrOrProxy, handler);
-		revocablesByProxy.set(proxy.proxy, proxy.revoke);
-		proxy = proxy.proxy;
-	} else {
-		proxy = new Proxy(objOrArrOrProxy, handler);
-	}
-	proxiesBySource.set(objOrArrOrProxy, proxy);
-	callbacksByProxy.set(proxy, callbacks);
 	return proxy;
 }
 
