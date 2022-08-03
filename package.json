@@ -1,6 +1,6 @@
 {
   "name": "simple-observable-proxy",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Simple observable ES6 proxy.",
   "main": "index.js",
   "directories": {
