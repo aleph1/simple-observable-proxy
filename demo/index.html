@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Simple Observable Proxy Demo</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	Check the console :)
+	<script type="module">
+		import { observe, unobserve } from '../dist/simple-observable-proxy.js';
+		const stateChange = () => {
+			console.log('stateChange()');
+		}
+		const state = observe({
+			test: 'test'
+		}, stateChange);
+		state.test = 'test2'; // stateChange() will be called on RAF
+		window.requestAnimationFrame(() => {
+			console.log('state.test : ' + state.test);
+			unobserve(state, stateChange);
+			state.test = 'test3'; // stateChange() will not be called
+			console.log('state.test : ' + state.test);
+		});
+	</script>
+</body>
+</html>
