@@ -1,7 +1,7 @@
 # Simple Observable Proxy
 Simple observable proxies for JavaScript, using requestAnimationFrame to defer callbacks and notify of changes. Observables can be shallow or deep objects or arrays, and all manipulation of objects (adding, editing, or deleting keys) and arrays (direct modification using \[\], methods, or changing length) is detected. Includes options for revocable proxies.
 
-Simple Observable Proxy is intended to be a very small library (approximately 500 bytes gzipped) that serves to notify that a proxy has changed, but does not report on differences between current and prior state.
+Simple Observable Proxy is intended to be a very small library (approximately 600 bytes gzipped) that serves to notify that a proxy has changed, but does not report on differences between current and prior state.
 
 ## Installation
 
@@ -12,7 +12,7 @@ $ npm install simple-observable-proxy
 
 Browser
 ```
-import { observe, unobserve, revoke } from 'simple-observable-proxy';
+import { observable, observe } from 'simple-observable-proxy';
 ```
 
 ## Basic Usage
@@ -24,9 +24,10 @@ import { observe, unobserve } from 'simple-observable-proxy';
 const stateChange = () => {
   console.log('stateChange()');
 }
-const state = observe({
+const state = observable({
   test: 'test'
-}, stateChange);
+});
+observe(state, stateChange);
 state.test = 'test2'; // stateChange() will be called on RAF
 window.requestAnimationFrame(() => {
   console.log('state.test : ' + state.test);
@@ -41,7 +42,7 @@ It is possible to have multiple callbacks on the same observable. This can be us
 ```js
 import { observe } from 'simple-observable-proxy';
 // create 
-const sharedState = observe([
+const sharedState = observable([
   {
     id: 1,
     name: 'My first book.'
@@ -64,52 +65,37 @@ observe(sharedState, sharedStateCallback1);
 observe(sharedState, sharedStateCallback2);
 ```
 
-## Advanced Usage
-
-`observe` allows support for revocable proxies by passing `options.revocable` as `true`.
-
-```js
-import { observe, revoke } from 'simple-observable-proxy';
-const stateChange = () => {
-  console.log('stateChange()');
-};
-const state = observe({
-  test: 'test'
-}, stateChange);
-state.test = 'test2'; // stateChange() will be called
-revoke(state);
-state.test = 'test3'; // will throw an error
-```
-
 ## Methods
 
-### observe(objectOrArray, callbackFn, options = {})
-Converts objectOrArray to a proxy, and subscribes to additions/modifications/deletions using callbackFn.
+### observable(objectOrArray)
+Converts objectOrArray to a proxy and returns it.
 
-Returns a proxy of objectOrArray.
+### observe(proxy, callbackFn)
+Subscribes to proxy changes using callbackFn.
 
-### unobserve(objectOrArrayProxy, callbackFn)
-Removes the callbackFn for objectOrArrayProxy if it exists.
+### unobserve(proxy, callbackFn)
+Unsubscribes from proxy changes using callbackFn.
 
-Returns true if the callbackFn was removed, and false if callbackFn was not registered for that objectOrArrayProxy.
+Returns true if the callbackFn was removed.
 
-### revoke(objectOrArrayProxy)
-Revokes the proxy if it was created using observe with options.revokable set to be true.
+### destroy(proxy)
+Cleans up the proxy.
 
-## Implementation
+## Notes
 
-Internally Simple Observable Proxy maintains WeakMaps of observables (object and array) mapped to their respective Proxy, as well as a WeakMap of Proxy instances mapped to an array of callbacks. Whenever a proxy is modified it is added to a notification queue that is called once per requestAnimationFrame.
+Simple Observable Proxy maintains a list of sources to prevent observing the same object or array more than once. Attempting to do so will throw an error.
 
-Even when multiple values are modified on an observable proxy only one notification is sent per callback on the next requestAnimationFrame. For example:
+When multiple values are modified on an observable proxy only one notification is sent per callback on the next requestAnimationFrame. For example:
 
 ```js
 const stateChange = () => {
   console.log('state changed')
 };
-const state = observe({
+const state = observable({
   test: 'test',
   test2: 'test2'
-}, stateChange);
+});
+observe(state, stateChange);
 state.test = 'test2'; // modify key
 state.nested = [1, 2, 3]; // added key
 delete state.test2; // delete key

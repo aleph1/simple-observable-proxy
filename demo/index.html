@@ -9,13 +9,14 @@
 <body>
 	Check the console :)
 	<script type="module">
-		import { observe, unobserve } from '../dist/simple-observable-proxy.js';
+		import { observable, observe, unobserve } from '../dist/simple-observable-proxy.js';
 		const stateChange = () => {
 			console.log('stateChange()');
 		}
-		const state = observe({
+		const state = observable({
 			test: 'test'
-		}, stateChange);
+		});
+		observe(state, stateChange);
 		state.test = 'test2'; // stateChange() will be called on RAF
 		window.requestAnimationFrame(() => {
 			console.log('state.test : ' + state.test);

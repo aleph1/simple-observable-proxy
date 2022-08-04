@@ -1,74 +1,94 @@
-const proxiesBySource = new WeakMap();
-const callbacksByProxy = new WeakMap();
-const revocablesByProxy = new WeakMap();
-const modifiedProxies = new Set();
+// sources that are being observed
+const sources = new WeakSet();
+const observablesByProxy = new WeakMap();
+// which observables will be notified on tick
+const notify = new Set();
 
-export function observe(objOrArrOrProxy, callback, options = {}) {
-	// determine if objOrArr has already been proxified
-	let proxy = proxiesBySource.get(objOrArrOrProxy) || callbacksByProxy.has(objOrArrOrProxy) && objOrArrOrProxy;
-	let callbacks = proxy && callbacksByProxy.get(proxy) || [];
-	if(typeof callback === 'function' && !callbacks.includes(callback)) callbacks.push(callback);
-	if(!proxy) {
-		const handler = {
-			get(target, key) {
-				const prop = target[key];
-				return prop && typeof prop === 'object' ? target[key] = observe(prop, callback, options) : prop;
-			},
-			set(target, key, value) {
-				if(target[key] !== value) {
-					target[key] = value;
-					modifiedProxies.add(proxy);
-				}
-				return true;
-			},
-			deleteProperty(target, prop) {
-				if (prop in target) {
-					delete target[prop];
-					modifiedProxies.add(proxy);
-					return true;
-				}
-				return false;
-			}
-		}
-		if(options.revocable) {
-			proxy = Proxy.revocable(objOrArrOrProxy, handler);
-			revocablesByProxy.set(proxy.proxy, proxy.revoke);
-			proxy = proxy.proxy;
-		} else {
-			proxy = new Proxy(objOrArrOrProxy, handler);
-		}
-		proxiesBySource.set(objOrArrOrProxy, proxy);
-		callbacksByProxy.set(proxy, callbacks);
-	}
-	return proxy;
+export class Observable {
+
+  constructor(source, root) {
+    if(sources.has(source)) throw new Error('Already observing source');
+    let complete = false;
+    const self = this;
+    const proxy = new Proxy(source, {
+      get(target, key) {
+        return target[key];
+      },
+      set(target, key, value) {
+        if(target[key] !== value) {
+          if(complete) {
+            if(observablesByProxy.has(value)) throw new Error('Can’t nest observables');
+            notify.add(root || self)
+          }
+          target[key] = value;
+        }
+        return true;
+      },
+      deleteProperty(target, key) {
+        if (key in target) {
+          delete target[key];
+          notify.add(root || self);
+          return true;
+        }
+        return false;
+      }
+    });
+    Object.keys(source).forEach( key => {
+      const value = source[key];
+      if(observablesByProxy.has(value)) throw new Error('Can’t nest observables');
+      if(Array.isArray(value) || (typeof value == 'object' && value instanceof Object)) proxy[key] = new Observable(value, self).proxy;
+    });
+    this.observers = new Set();
+    observablesByProxy.set(this.proxy = proxy, this);
+    sources.add(this.source = source);
+    complete = true;
+  }
+
+  observe(callback) {
+    return this.observers.add(callback);
+  }
+
+  unobserve(callback) {
+    return this.observers.delete(callback);
+  }
+
+  destroy() {
+    this.observers.clear();
+    this.observers = null;
+    sources.delete(this.source);
+    observablesByProxy.delete(this.proxy);
+  }
+  
 }
 
-export function unobserve(objOrArrOrProxy, callback) {
-	let callbacks = callbacksByProxy.get(proxiesBySource.get(objOrArrOrProxy) || objOrArrOrProxy);
-	if(callbacks) {
-		const index = callbacks.indexOf(callback);
-		if(index !== -1) callbacks.splice(index, 1);
-	}
+export function observable(source) {
+  return new Observable(source).proxy;
 }
 
-export function revoke(objOrArrOrProxy) {
-	const proxy = proxiesBySource.get(objOrArrOrProxy) || objOrArrOrProxy;
-	const revoke = revocablesByProxy.get(proxy);
-	if(revoke) {
-		revoke();
-		revocablesByProxy.delete(proxy);
-		return true;
-	}
-	return false;		
+export function observe(observableProxy, callback) {
+  const observable = observablesByProxy.get(observableProxy);
+  if(!observable) throw new Error('observableProxy not observable');
+  return observable.observe(callback);
 }
 
-function onTick(){
-	modifiedProxies.forEach(proxy => {
-		const callbacks = callbacksByProxy.get(proxy);
-		callbacks && callbacks.forEach(callback => callback());
-	});
-	modifiedProxies.clear();
-	window.requestAnimationFrame(onTick);
+export function unobserve(observableProxy, callback) {
+  const observable = observablesByProxy.get(observableProxy);
+  if(!observable) throw new Error('observableProxy not observable');
+  return observable.unobserve(callback);
 }
 
-onTick();
+export function destroy(observableProxy) {
+  const observable = observablesByProxy.get(observableProxy);
+  if(!observable) throw new Error('observableProxy not observable');
+  return observable.destroy();
+}
+
+function tick() {
+  notify.forEach(observable => {
+    observable.observers.forEach( callback => callback() );
+  })
+  notify.clear();
+  window.requestAnimationFrame(tick);
+}
+
+tick();
