@@ -20,7 +20,7 @@ import { observable, observe } from 'simple-observable-proxy';
 Objects and arrays can also be observed and unobserved.
 
 ```js
-import { observe, unobserve } from 'simple-observable-proxy';
+import { observable, observe, unobserve } from 'simple-observable-proxy';
 const stateChange = () => {
   console.log('stateChange()');
 }
@@ -40,7 +40,7 @@ window.requestAnimationFrame(() => {
 It is possible to have multiple callbacks on the same observable. This can be useful in specific cases such as multiple components sharing state.
 
 ```js
-import { observe } from 'simple-observable-proxy';
+import { observable, observe } from 'simple-observable-proxy';
 // create 
 const sharedState = observable([
   {
