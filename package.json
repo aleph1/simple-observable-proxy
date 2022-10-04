@@ -3,6 +3,7 @@
   "version": "0.3.0",
   "description": "Simple observable ES6 proxy.",
   "main": "index.js",
+  "browser": "dist/simple-observable-proxy.js",
   "directories": {
     "test": "test"
   },
