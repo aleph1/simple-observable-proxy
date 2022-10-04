@@ -19,6 +19,7 @@
     "proxy",
     "observable",
     "reactive",
+    "state",
     "es6"
   ],
   "author": "Daniel Barber / Aleph1 Technologies Inc.",
