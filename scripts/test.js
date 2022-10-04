@@ -28,6 +28,14 @@ test('Creates observable from array', () => {
   expect(state).toEqual([1, 2, 3]);
 });
 
+test('Creates observable from sparse array', () => {
+  const state = observable([1, , 3]);
+  expect(state.length).toEqual(3);
+  expect(state[0]).toEqual(1);
+  expect(state[1]).toEqual(undefined);
+  expect(state[2]).toEqual(3);
+});
+
 test('Deferred callback when adding object key', done => {
   const callback = jest.fn();
   const state = observable(createState());
