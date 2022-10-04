@@ -85,6 +85,8 @@ Cleans up the proxy.
 
 Simple Observable Proxy maintains a list of sources to prevent observing the same object or array more than once. Attempting to do so will throw an error.
 
+Attempting to nest one observable within another will throw an error.
+
 When multiple values are modified on an observable proxy only one notification is sent per callback on the next requestAnimationFrame. For example:
 
 ```js
