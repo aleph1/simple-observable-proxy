@@ -90,6 +90,7 @@ Attempting to nest one observable within another will throw an error.
 When multiple values are modified on an observable proxy only one notification is sent per callback on the next requestAnimationFrame. For example:
 
 ```js
+import { observable, observe } from 'simple-observable-proxy';
 const stateChange = () => {
   console.log('state changed')
 };
