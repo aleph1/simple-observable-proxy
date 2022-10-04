@@ -22,7 +22,10 @@
     "state",
     "es6"
   ],
-  "author": "Daniel Barber / Aleph1 Technologies Inc.",
+  "author": {
+    "name": "Daniel Barber / Aleph1 Technologies Inc.",
+    "url" : "https://aleph-1.com/"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/aleph1/simple-observable-proxy/issues"
