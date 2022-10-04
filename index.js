@@ -37,7 +37,7 @@ export class Observable {
     (Array.isArray(source) ? [...Array(source.length).keys()] : Object.keys(source)).forEach( key => {
       const value = source[key];
       if(observablesByProxy.has(value)) throw new Error('Can’t nest observables');
-      if(Array.isArray(value) || (typeof value == 'object' && value instanceof Object)) proxy[key] = new Observable(value, self).proxy;
+      if(Array.isArray(value) || (typeof value === 'object' && value instanceof Object)) proxy[key] = new Observable(value, self).proxy;
     });
     this.observers = new Set();
     observablesByProxy.set(this.proxy = proxy, this);
