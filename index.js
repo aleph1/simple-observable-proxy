@@ -87,7 +87,7 @@ export function destroy(observableProxy) {
 function tick() {
   notify.forEach(observable => {
     observable.observers.forEach( callback => callback() );
-  })
+  });
   notify.clear();
   window.requestAnimationFrame(tick);
 }
