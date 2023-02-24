@@ -78,7 +78,7 @@ export function unobserve(observableProxy, callback) {
 
 export function destroy(observableProxy) {
   const observable = observablesByProxy.get(observableProxy);
-  return observable.destroy();
+  return observable ? observable.destroy() : false;
 }
 
 function tick() {
