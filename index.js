@@ -73,7 +73,7 @@ export function observe(observableProxy, callback) {
 
 export function unobserve(observableProxy, callback) {
   const observable = observablesByProxy.get(observableProxy);
-  return observable.unobserve(callback);
+  return observable && typeof callback === 'function' ? observable.unobserve(callback) : false;
 }
 
 export function destroy(observableProxy) {
