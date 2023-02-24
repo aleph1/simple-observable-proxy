@@ -1,5 +1,5 @@
-// sources that are being observed
-const sources = new WeakSet();
+// data that is being observed
+const observables = new WeakSet();
 const observablesByProxy = new WeakMap();
 // which observables will be notified on tick
 const notify = new Set();
@@ -7,7 +7,7 @@ const notify = new Set();
 export class Observable {
 
   constructor(data, root) {
-    if(sources.has(data)) throw new Error('Observable of data again');
+    if(observables.has(data)) throw new Error('Observable of data again');
     let complete = false;
     const self = this;
     const proxy = new Proxy(data, {
@@ -41,7 +41,7 @@ export class Observable {
     });
     this.observers = new Set();
     observablesByProxy.set(this.proxy = proxy, this);
-    sources.add(this.data = data);
+    observables.add(this.data = data);
     complete = true;
   }
 
@@ -56,7 +56,7 @@ export class Observable {
   destroy() {
     this.observers.clear();
     this.observers = null;
-    return sources.delete(this.data) && observablesByProxy.delete(this.proxy);
+    return observables.delete(this.data) && observablesByProxy.delete(this.proxy);
   }
   
 }
