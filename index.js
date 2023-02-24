@@ -62,7 +62,7 @@ export class Observable {
 }
 
 export function observable(data) {
-  return new Observable(data).proxy;
+  return (Array.isArray(data) || (typeof data === 'object' && data instanceof Object)) && new Observable(data).proxy;
 }
 
 export function observe(observableProxy, callback) {
