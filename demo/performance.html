@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Simple Observable Proxy Performance</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	Check the console :)
+	<script type="module">
+		import { observable, observe, destroy } from '../dist/simple-observable-proxy.js';
+		const states = [];
+		const statesSize = 1000;
+		let observables = [];
+		for( let i = 0; i < statesSize; i++ ) {
+			states.push({
+				lifespan: i,
+				duration: 0,
+				test1: 0,
+				test2: 0,
+				test3: 0,
+				test4: 0,
+				test5: 0,
+				test6: 0,
+				test7: 0,
+				test8: 0,
+			});
+		}
+		const t0 = performance.now();
+		for( let i = 0; i < statesSize; i++ ) {
+			const observableObj = observable(states[i]);
+			observe(observableObj, () => {});
+			observables.push(observableObj);
+		}
+		const t1 = performance.now();
+		console.log('Creating ' + statesSize + ' observables took ' + (t1 - t0)+ 'ms' );
+		function updateObservables() {
+			const t2 = performance.now();
+			for(let i = observables.length - 1; i >= 0; i--) {
+				const observable = observables[i];
+				observable.duration++;
+				observable.test1++;
+				observable.test2++;
+				observable.test3++;
+				observable.test4++;
+				observable.test5++;
+				observable.test6++;
+				observable.test6++;
+				observable.test7++;
+				observable.test8++;
+				if(observable.duration > observable.lifespan) {
+					destroy(observable);
+					observables[i] = null;
+				}
+			};
+			observables = observables.filter(observable => !!observable);
+			window.requestAnimationFrame(updateObservables);
+			const t3 = performance.now();
+			console.log('Modifying ' + observables.length + ' observables took ' + (t3 - t2)+ 'ms' );
+		}
+		updateObservables();
+	</script>
+</body>
+</html>
