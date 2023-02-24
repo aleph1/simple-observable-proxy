@@ -7,7 +7,7 @@ const notify = new Set();
 export class Observable {
 
   constructor(data, root) {
-    if(sources.has(data)) throw new Error('Already observing source');
+    if(sources.has(data)) throw new Error('Observable of data again');
     let complete = false;
     const self = this;
     const proxy = new Proxy(data, {
