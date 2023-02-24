@@ -78,7 +78,6 @@ export function unobserve(observableProxy, callback) {
 
 export function destroy(observableProxy) {
   const observable = observablesByProxy.get(observableProxy);
-  if(!observable) throw new Error('observableProxy not observable');
   return observable.destroy();
 }
 
