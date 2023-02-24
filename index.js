@@ -6,11 +6,11 @@ const notify = new Set();
 
 export class Observable {
 
-  constructor(source, root) {
-    if(sources.has(source)) throw new Error('Already observing source');
+  constructor(data, root) {
+    if(sources.has(data)) throw new Error('Already observing source');
     let complete = false;
     const self = this;
-    const proxy = new Proxy(source, {
+    const proxy = new Proxy(data, {
       get(target, key) {
         return target[key];
       },
@@ -34,14 +34,14 @@ export class Observable {
       }
     });
     // Object.keys on array only includes keys that are specifically set
-    (Array.isArray(source) ? [...Array(source.length).keys()] : Object.keys(source)).forEach( key => {
-      const value = source[key];
+    (Array.isArray(data) ? [...Array(data.length).keys()] : Object.keys(data)).forEach( key => {
+      const value = data[key];
       if(observablesByProxy.has(value)) throw new Error('Can’t nest observables');
       if(Array.isArray(value) || (typeof value === 'object' && value instanceof Object)) proxy[key] = new Observable(value, self).proxy;
     });
     this.observers = new Set();
     observablesByProxy.set(this.proxy = proxy, this);
-    sources.add(this.source = source);
+    sources.add(this.data = data);
     complete = true;
   }
 
@@ -56,14 +56,14 @@ export class Observable {
   destroy() {
     this.observers.clear();
     this.observers = null;
-    sources.delete(this.source);
+    sources.delete(this.data);
     observablesByProxy.delete(this.proxy);
   }
   
 }
 
-export function observable(source) {
-  return new Observable(source).proxy;
+export function observable(data) {
+  return new Observable(data).proxy;
 }
 
 export function observe(observableProxy, callback) {
