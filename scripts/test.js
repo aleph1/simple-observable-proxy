@@ -36,6 +36,31 @@ test('Creates observable from sparse array', () => {
   expect(state[2]).toEqual(3);
 });
 
+test('observable returns false when trying to observe boolean', () => {
+  const state = observable(false);
+  expect(state).toEqual(false);
+});
+
+test('observable returns false when trying to observe string', () => {
+  const state = observable('test');
+  expect(state).toEqual(false);
+});
+
+test('observable returns false when trying to observe number', () => {
+  const state = observable(1);
+  expect(state).toEqual(false);
+});
+
+test('observable returns false when trying to observe null', () => {
+  const state = observable(null);
+  expect(state).toEqual(false);
+});
+
+test('observable returns false when trying to observe undefined', () => {
+  const state = observable(undefined);
+  expect(state).toEqual(false);
+});
+
 test('Deferred callback when adding object key', done => {
   const callback = jest.fn();
   const state = observable(createState());
