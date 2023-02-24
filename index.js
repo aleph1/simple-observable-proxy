@@ -68,7 +68,7 @@ export function observable(data) {
 
 export function observe(observableProxy, callback) {
   const observable = observablesByProxy.get(observableProxy);
-  return observable.observe(callback);
+  return observable && typeof callback === 'function' ? observable.observe(callback) : false;
 }
 
 export function unobserve(observableProxy, callback) {
