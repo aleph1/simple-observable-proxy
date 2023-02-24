@@ -56,8 +56,7 @@ export class Observable {
   destroy() {
     this.observers.clear();
     this.observers = null;
-    sources.delete(this.data);
-    observablesByProxy.delete(this.proxy);
+    return sources.delete(this.data) && observablesByProxy.delete(this.proxy);
   }
   
 }
