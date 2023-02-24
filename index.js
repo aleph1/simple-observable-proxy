@@ -68,7 +68,6 @@ export function observable(data) {
 
 export function observe(observableProxy, callback) {
   const observable = observablesByProxy.get(observableProxy);
-  if(!observable) throw new Error('observableProxy not observable');
   return observable.observe(callback);
 }
 
