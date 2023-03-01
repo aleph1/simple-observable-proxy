@@ -5,6 +5,14 @@ const observablesByProxy = new WeakMap();
 // which observables will be notified on tick
 const notify = new Set();
 
+const tick = () => {
+  notify.forEach(observable => {
+    observable.observers.forEach( callback => callback() );
+  });
+  notify.clear();
+  window.requestAnimationFrame(tick);
+};
+
 class Observable {
 
   constructor(data, root) {
@@ -79,14 +87,6 @@ export function unobserve(observableProxy, callback) {
 export function destroy(observableProxy) {
   const observable = observablesByProxy.get(observableProxy);
   return observable ? observable.destroy() : false;
-}
-
-function tick() {
-  notify.forEach(observable => {
-    observable.observers.forEach( callback => callback() );
-  });
-  notify.clear();
-  window.requestAnimationFrame(tick);
 }
 
 tick();
