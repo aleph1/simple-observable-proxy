@@ -5,7 +5,7 @@ const observablesByProxy = new WeakMap();
 // which observables will be notified on tick
 const notify = new Set();
 
-export class Observable {
+class Observable {
 
   constructor(data, root) {
     if(observables.has(data)) throw new Error('Observable of data again');
