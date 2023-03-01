@@ -49,10 +49,9 @@ class Observable {
       if(observablesByProxy.has(value)) throw new Error('Can’t nest observables');
       if(Array.isArray(value) || (typeof value === 'object' && value instanceof Object)) proxy[key] = new Observable(value, self).proxy;
     });
-    this.observers = new Set();
-    observables.add(this.data = data);
-    complete = true;
+    self.observers = new Set();
     observablesByProxy.set(self.proxy = proxy, self);
+    observables.add(self.data = data);
   }
 
   observe(callback) {
