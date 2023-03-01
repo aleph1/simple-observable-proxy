@@ -63,8 +63,8 @@ class Observable {
   }
 
   destroy() {
-    this.observers.clear();
-    this.observers = null;
+    // Set.prototype.clear() returns undefined
+    this.observers = this.observers.clear();
     return observables.delete(this.data) && observablesByProxy.delete(this.proxy);
   }
   
