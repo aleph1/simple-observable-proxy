@@ -16,7 +16,6 @@ const tick = () => {
 class Observable {
 
   constructor(data, root) {
-    let complete = false;
     if(observables.has(data)) throw new Error('Can’t observe Observable.proxy');
     const self = this;
     const proxy = new Proxy(data, {
@@ -25,7 +24,9 @@ class Observable {
       },
       set(target, key, value) {
         if(target[key] !== value) {
-          if(complete) {
+          // self.proxy is assigned at the end of the Observable constructor,
+          // so it is safe to use it to see if observers need to be notified
+          if(self.proxy) {
             if(observablesByProxy.has(value)) throw new Error('Can’t nest observables');
             notify.add(root || self)
           }
@@ -49,9 +50,9 @@ class Observable {
       if(Array.isArray(value) || (typeof value === 'object' && value instanceof Object)) proxy[key] = new Observable(value, self).proxy;
     });
     this.observers = new Set();
-    observablesByProxy.set(this.proxy = proxy, this);
     observables.add(this.data = data);
     complete = true;
+    observablesByProxy.set(self.proxy = proxy, self);
   }
 
   observe(callback) {
