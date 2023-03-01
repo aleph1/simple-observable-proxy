@@ -103,6 +103,6 @@ state.test = 'test2'; // modify key
 state.nested = [1, 2, 3]; // added key
 delete state.test2; // delete key
 
-// depsite multiple changes to state, stateChange will 
+// despite multiple changes to state, stateChange will 
 // only be called once on next requestAnimationFrame
 ```
