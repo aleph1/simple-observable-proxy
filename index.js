@@ -44,7 +44,7 @@ class Observable {
       }
     });
     // Object.keys on array only includes keys that are specifically set
-    (Array.isArray(data) ? [...Array(data.length).keys()] : Object.keys(data)).forEach( key => {
+    (Array.isArray(data) ? [...Array(data.length).keys()] : Object.keys(data)).forEach(key => {
       const value = data[key];
       if(observablesByProxy.has(value)) throw new Error('Can’t nest observables');
       if(Array.isArray(value) || (typeof value === 'object' && value instanceof Object)) proxy[key] = new Observable(value, self).proxy;
