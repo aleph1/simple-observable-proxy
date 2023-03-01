@@ -1,5 +1,6 @@
 // data that is being observed
 const observables = new WeakSet();
+// Observable instanced stored by their .proxy
 const observablesByProxy = new WeakMap();
 // which observables will be notified on tick
 const notify = new Set();
