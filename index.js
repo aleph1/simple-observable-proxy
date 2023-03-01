@@ -16,8 +16,8 @@ const tick = () => {
 class Observable {
 
   constructor(data, root) {
-    if(observables.has(data)) throw new Error('Observable of data again');
     let complete = false;
+    if(observables.has(data)) throw new Error('Can’t observe Observable.proxy');
     const self = this;
     const proxy = new Proxy(data, {
       get(target, key) {
