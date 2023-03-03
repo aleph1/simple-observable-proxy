@@ -1,5 +1,7 @@
 # Simple Observable Proxy
-Simple observable proxies for JavaScript, allowing observation of Array and Object. All manipulation of objects (adding, editing, or deleting keys) and arrays (direct modification using \[\], methods, or changing length) is detected. Multiple observers can be created per observable, and they will be sent a signal on requestAnimationFrame that the observable has changed. Since Simple Observable Proxy is intended to be a very small library (it’s less than 600 bytes gzipped), it does not report on specific differences between the current and prior state of the observed object or array.
+### Simple observable proxies for JavaScript, allows observation of arrays and objects that are either flat or deep.
+For objects, changing values, as well as adding, editing, or deleting keys results in callback signal. For arrays changing values, direct modification using \[\], methods that change the array (pop, push, shift, unshift, etc.), or modifying length results in callback signal. Multiple observers can be created per observable, and all signals are queued and sent on requestAnimationFrame.
+Simple Observable Proxy is dependency-free and is a very small library (it’s less than 600 bytes gzipped). It does not report on specific differences between the current and prior state of the observed object or array. 
 
 ## Installation
 
