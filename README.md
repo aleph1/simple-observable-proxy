@@ -1,13 +1,11 @@
 # Simple Observable Proxy
-Simple observable proxies for JavaScript, using requestAnimationFrame to defer callbacks and notify of changes. Observables can be shallow or deep objects or arrays, and all manipulation of objects (adding, editing, or deleting keys) and arrays (direct modification using \[\], methods, or changing length) is detected. Includes options for revocable proxies.
-
-Simple Observable Proxy is intended to be a very small library (less than 600 bytes gzipped), that serves to notify that a proxy has changed, but does not report on specific differences between current and prior state.
+Simple observable proxies for JavaScript, allowing observation of Array and Object. All manipulation of objects (adding, editing, or deleting keys) and arrays (direct modification using \[\], methods, or changing length) is detected. Multiple observers can be created per observable, and they will be sent a signal on requestAnimationFrame that the observable has changed. Since Simple Observable Proxy is intended to be a very small library (it’s less than 600 bytes gzipped), it does not report on specific differences between the current and prior state of the observed object or array.
 
 ## Installation
 
 Node
 ```
-$ npm install simple-observable-proxy
+npm install simple-observable-proxy
 ```
 
 Browser
