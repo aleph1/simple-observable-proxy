@@ -4,4 +4,9 @@ Thumbs.db
 
 # node modules
 /node_modules
+
+# jest
+/coverage
+
+# gzipped files
 *.gz
