@@ -7,7 +7,7 @@ const notify = new Set();
 
 const tick = () => {
   notify.forEach(observable => {
-    observable.observers.forEach( callback => callback() );
+    observable.observers.forEach(callback => callback());
   });
   notify.clear();
   window.requestAnimationFrame(tick);
