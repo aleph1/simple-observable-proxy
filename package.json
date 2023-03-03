@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "repository": {
     "type": "git",
