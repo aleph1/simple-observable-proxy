@@ -1,4 +1,4 @@
-import { observable, observe, unobserve, revoke } from '../index.js';
+import { observable, observe, unobserve, destroy } from '../index.js';
 
 function createState() {
   return {
@@ -195,20 +195,6 @@ test('Deferred callback when modifying nested object', done => {
   done();
 });
 
-//
-//test('Modifies nested array by index with deferred callback', done => {
-//  const callback = jest.fn();
-//  const state = observable(createState());
-//  expect(state.array).toEqual([1, 2, 3]);
-//  state.array[0] = 0;
-//  expect(callback).not.toBeCalled();
-//  jest.advanceTimersByTime(FRAME_TIME);
-//  expect(callback).toHaveBeenCalledTimes(1);
-//  expect(state.array.length).toEqual(3);
-//  expect(state.array).toEqual([0, 2, 3]);
-//  done();
-//});
-
 test('Multiple deferred callbacks when modifying object', done => {
   const callback1 = jest.fn();
   const callback2 = jest.fn();
@@ -270,14 +256,44 @@ test('Error when observables are nested', done => {
   done();
 });
 
-//test('Error when observable has been destroyed', done => {
-//  const callback = jest.fn();
-//  const state = observable(createState(), callback, {
-//    revocable: true
-//  });
-//  revoke(state);
-//  expect(() => {
-//    state.string = 'test2';
-//  }).toThrow(TypeError);
-//  done();
-//});
+test('destroy returns true when destroying an observable', done => {
+  const state1 = observable(createState());
+  expect(destroy(state1, ()=>{})).toEqual(true);
+  done();
+});
+
+test('after destroying a non-observable observe returns false', done => {
+  const state1 = destroy(observable(createState()));
+  expect(observe(state1, ()=>{})).toEqual(false);
+  done();
+});
+
+test('after destroying a non-observable unobserve returns false', done => {
+  const state1 = destroy(observable(createState()));
+  expect(unobserve(state1, ()=>{})).toEqual(false);
+  done();
+});
+
+test('destroying an non-observable multiple times returns false', done => {
+  const state1 = destroy(observable(createState()));
+  expect(destroy(state1)).toEqual(false);
+  done();
+});
+
+test('observe returns false when trying to observe a non-observable', done => {
+  const obj1 = createState();
+  expect(observe(obj1, ()=>{})).toEqual(false);
+  done();
+});
+
+test('unobserve returns false when trying to unobserve a non-observable', done => {
+  const obj1 = createState();
+  expect(unobserve(obj1, ()=>{})).toEqual(false);
+  done();
+});
+
+test('destroy returns false when trying to destroy a non-observable', done => {
+  const obj1 = createState();
+  expect(destroy(obj1, ()=>{})).toEqual(false);
+  done();
+});
