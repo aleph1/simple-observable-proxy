@@ -17,9 +17,13 @@
   },
   "keywords": [
     "proxy",
+    "proxies",
     "observable",
+    "observe",
     "reactive",
     "state",
+    "signal",
+    "signals",
     "es6"
   ],
   "author": {
