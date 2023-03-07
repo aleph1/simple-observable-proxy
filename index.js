@@ -16,9 +16,7 @@ const tick = () => {
 };
 
 const makeObservableProxy = (data, rootProxy) => {
-  if(observables.has(data)) throw new Error('Proxy of data already exists');
-  let notify = false;
-  const observers = new Set();
+  if(observables.has(data)) throw new Error('Can’t observe Object or Array again');
   const proxy = new Proxy(data, {
     get(target, key) {
       return target[key];
@@ -26,7 +24,7 @@ const makeObservableProxy = (data, rootProxy) => {
     set(target, key, value) {
       if(target[key] !== value) {
         // self.proxy is assigned at the end of the Observable constructor,
-        if(notify) {
+        if(observers) {
           if(observablesByProxy.has(value)) throw new Error('Can’t nest observables');
           proxiesToNotify.add(rootProxy || proxy)
         }
@@ -48,10 +46,10 @@ const makeObservableProxy = (data, rootProxy) => {
     if(observablesByProxy.has(value)) throw new Error('Can’t nest observables');
     if(Array.isArray(value) || (typeof value === 'object' && value instanceof Object)) proxy[key] = makeObservableProxy(value, rootProxy || proxy);
   });
-  notify = true;
+  const observers = new Set();
   observables.add(data);
   observablesByProxy.set(proxy, data);
-  observersByProxy.set(proxy, new Set());
+  observersByProxy.set(proxy, observers);
   return proxy;
 };
 
