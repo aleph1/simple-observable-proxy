@@ -1,9 +1,9 @@
 # Simple Observable Proxy
 ### Simple Observable Proxy is a dependency-free library for JavaScript, that allows for observation of arrays and objects that are either flat or deep.
 
-For objects, changing values, as well as adding, editing, or deleting keys results in callback signal. For arrays changing values, direct modification using \[\], methods that change the array (pop, push, shift, unshift, etc.), or modifying length results in callback signal. Multiple observers can be created per observable, and all signals are queued and sent on requestAnimationFrame.
+For objects, changing values, as well as adding, editing, or deleting keys results in a callback signal. For arrays changing values, direct modification using \[\], methods that change the array (pop, push, shift, unshift, etc.), or modifying length results in a callback signal. Multiple observers can be created per observable, and all signals are queued and sent on requestAnimationFrame.
 
-Simple Observable Proxy is intended to be a very small library (it’s less than 600 bytes gzipped), and it does not report on specific differences between the current and prior state of the observed object or array.
+Simple Observable Proxy is intended to be a very small library (it’s less than 550 bytes when minified and gzipped), and, as such, it does not report on specific differences between the current and prior state of the observed object or array.
 
 ## Installation
 
