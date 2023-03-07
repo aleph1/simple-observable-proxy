@@ -7,6 +7,9 @@ const observersByProxy = new Map();
 // observers to call on tick
 const proxiesToNotify = new Set();
 
+const objectConstructor = {}.constructor;
+const canBeObservable = data => !!data && (Array.isArray(data) || typeof data === 'object' && data.constructor === objectConstructor);
+
 const tick = () => {
   proxiesToNotify.forEach(proxy => {
     observersByProxy.get(proxy).forEach(callback => callback());
