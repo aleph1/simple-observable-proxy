@@ -47,7 +47,7 @@ const makeObservableProxy = (data, rootProxy) => {
   (Array.isArray(data) ? [...Array(data.length).keys()] : Object.keys(data)).forEach(key => {
     const value = data[key];
     if(observablesByProxy.has(value)) throw new Error('Can’t nest observables');
-    if(Array.isArray(value) || (typeof value === 'object' && value instanceof Object)) proxy[key] = makeObservableProxy(value, rootProxy || proxy);
+    if(/*#__INLINE__*/canBeObservable(value)) proxy[key] = makeObservableProxy(value, rootProxy || proxy);
   });
   const observers = new Set();
   observables.add(data);
@@ -57,7 +57,7 @@ const makeObservableProxy = (data, rootProxy) => {
 };
 
 export const observable = (data) => {
-  return (Array.isArray(data) || (typeof data === 'object' && data instanceof Object)) && makeObservableProxy(data);
+  return /*#__INLINE__*/canBeObservable(data) && makeObservableProxy(data);
 }
 
 export const observe = (observableProxy, callback) => {
