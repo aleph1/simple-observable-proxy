@@ -36,27 +36,27 @@ test('Creates observable from sparse array', () => {
   expect(state[2]).toEqual(3);
 });
 
-test('observable returns false when trying to observe boolean', () => {
+test('observable returns false when passed boolean', () => {
   const state = observable(false);
   expect(state).toEqual(false);
 });
 
-test('observable returns false when trying to observe string', () => {
+test('observable returns false when passed string', () => {
   const state = observable('test');
   expect(state).toEqual(false);
 });
 
-test('observable returns false when trying to observe number', () => {
+test('observable returns false when passed number', () => {
   const state = observable(1);
   expect(state).toEqual(false);
 });
 
-test('observable returns false when trying to observe null', () => {
+test('observable returns false when passed null', () => {
   const state = observable(null);
   expect(state).toEqual(false);
 });
 
-test('observable returns false when trying to observe undefined', () => {
+test('observable returns false when passed undefined', () => {
   const state = observable(undefined);
   expect(state).toEqual(false);
 });
