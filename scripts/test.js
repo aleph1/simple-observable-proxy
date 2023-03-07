@@ -61,6 +61,17 @@ test('observable returns false when passed undefined', () => {
   expect(state).toEqual(false);
 });
 
+test('observable returns false when passed instance of built-in class', () => {
+  const state = observable(new Date());
+  expect(state).toEqual(false);
+});
+
+test('observable returns false when passed instance of custom class', () => {
+  const customClass = function(){};
+  const state = observable(new customClass());
+  expect(state).toEqual(false);
+});
+
 test('Deferred callback when adding object key', done => {
   const callback = jest.fn();
   const state = observable(createState());
