@@ -123,6 +123,22 @@ test('Deferred callback when modifying mutliple object keys', done => {
   done();
 });
 
+test('Deferred callback when modifying object using Object.assign()', done => {
+  const callback = jest.fn();
+  const state = observable(createState());
+  observe(state, callback);
+  Object.assign(state, {
+    boolean: false,
+    number: 1
+  });
+  expect(callback).not.toBeCalled();
+  jest.advanceTimersByTime(FRAME_TIME);
+  expect(callback).toHaveBeenCalledTimes(1);
+  expect(state.boolean).toEqual(false);
+  expect(state.number).toEqual(1);
+  done();
+});
+
 test('Deferred callback when modifying array using pop', done => {
   const callback = jest.fn();
   const state = observable([1, 2, 3]);
