@@ -69,16 +69,14 @@ observe(sharedState, sharedStateCallback2);
 
 ## Methods
 
-### observable(objectOrArray)
-Converts objectOrArray to a proxy and returns it.
+### observable(plainObjectOrArray)
+Converts a plain object or array to a proxy and returns it. If anything else is passed to the function it returns `false`.
 
 ### observe(proxy, callbackFn)
-Subscribes to proxy changes using callbackFn.
+Subscribes to proxy changes using callbackFn, Returns `true` if successfully subscribed, or `false` in cases where the proxy or callback function is invalid, or the callback is already registered.
 
 ### unobserve(proxy, callbackFn)
-Unsubscribes from proxy changes using callbackFn.
-
-Returns true if the callbackFn was removed.
+Unsubscribes from proxy changes using callbackFn. Returns `true` if successfully unsubscribed, or `false` in cases where the proxy or callback function is invalid.
 
 ### destroy(proxy)
 Cleans up the proxy.
