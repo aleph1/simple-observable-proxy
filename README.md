@@ -70,7 +70,7 @@ observe(sharedState, sharedStateCallback2);
 ## Methods
 
 ### observable(plainObjectOrArray)
-Converts a plain object or array to a proxy and returns it. If anything else is passed to the function it returns `false`.
+Converts a plain object or array to a `Proxy` and returns it. If any other value is passed to the function it returns `false`.
 
 ### observe(proxy, callbackFn)
 Subscribes to proxy changes using callbackFn, Returns `true` if successfully subscribed, or `false` in cases where the proxy or callback function is invalid, or the callback is already registered.
