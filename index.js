@@ -26,7 +26,6 @@ const makeObservableProxy = (data, rootProxy) => {
     },
     set(target, key, value) {
       if(target[key] !== value) {
-        // self.proxy is assigned at the end of the Observable constructor,
         if(observers) {
           if(observablesByProxy.has(value)) throw new Error('Can’t nest observables');
           proxiesToNotify.add(rootProxy || proxy)
