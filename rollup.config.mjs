@@ -7,9 +7,11 @@ const banner = '/*! simple observable proxy v' + process.env.npm_package_version
 export default [
   // production build
   {
-    input: 'index.ts',
+    input: 'src/index.ts',
     output: {
       file: 'dist/simple-observable-proxy.js',
+      exports: 'named',
+      format: 'esm',
       banner
     },
     plugins: [
@@ -20,16 +22,19 @@ export default [
       }),
       terser({
         mangle: false,
-        toplevel: true
+        toplevel: true,
+        module: true
       }),
       prettier()
     ]
   },
   // minified production build
   {
-    input: 'index.ts',
+    input: 'src/index.ts',
     output: {
       file: 'dist/simple-observable-proxy.min.js',
+      exports: 'named',
+      format: 'esm',
       banner
     },
     plugins: [

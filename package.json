@@ -2,13 +2,13 @@
   "name": "simple-observable-proxy",
   "version": "1.0.0",
   "description": "Simple observable ES6 proxy.",
-  "main": "index.js",
+  "main": "lib/index.js",
   "browser": "dist/simple-observable-proxy.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "build": "rollup --config",
+    "build": "npx tsc && rollup --config",
     "test": "jest --coverage"
   },
   "repository": {
@@ -38,17 +38,19 @@
   },
   "homepage": "https://github.com/aleph1/simple-observable-proxy#readme",
   "devDependencies": {
-    "@rollup/plugin-replace": "^4.0.0",
+    "@babel/cli": "^7.21.0",
+    "@babel/core": "^7.21.3",
+    "@babel/parser": "^7.21.3",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-typescript": "^7.21.0",
     "@rollup/plugin-terser": "^0.4.0",
-    "@rollup/plugin-typescript": "^8.3.2",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "rollup-plugin-prettier": "^3.0.0",
     "@types/jest": "^27.5.1",
     "jest": "^28.1.0",
     "jest-environment-jsdom": "^28.1.0",
     "prettier": "^2.8.4",
-    "rollup": "^2.74.1",
-    "rollup-plugin-brotli": "^3.1.0",
-    "rollup-plugin-prettier": "^3.0.0",
-    "rollup-plugin-terser": "^7.0.2",
+    "rollup": "^3.19.1",
     "ts-jest": "^28.0.3",
     "tslib": "^2.4.0",
     "typescript": "^4.6.4"
