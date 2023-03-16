@@ -1,4 +1,4 @@
-import { observable, observe, unobserve, destroy } from '../index.js';
+import { observable, observe, unobserve, destroy } from '../index';
 
 function createState() {
   return {
@@ -285,7 +285,7 @@ test('Error when observables are nested', done => {
 
 test('destroy returns true when destroying an observable', done => {
   const state1 = observable(createState());
-  expect(destroy(state1, ()=>{})).toEqual(true);
+  expect(destroy(state1)).toEqual(true);
   done();
 });
 
@@ -321,6 +321,6 @@ test('unobserve returns false when trying to unobserve a non-observable', done =
 
 test('destroy returns false when trying to destroy a non-observable', done => {
   const obj1 = createState();
-  expect(destroy(obj1, ()=>{})).toEqual(false);
+  expect(destroy(obj1)).toEqual(false);
   done();
 });
