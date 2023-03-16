@@ -79,7 +79,7 @@ Subscribes to proxy changes using callbackFn, Returns `true` if successfully sub
 Unsubscribes from proxy changes using callbackFn. Returns `true` if successfully unsubscribed, or `false` in cases where the proxy or callback function is invalid.
 
 ### destroy(proxy)
-Cleans up the proxy.
+Cleans up the proxy. Returns `true` if successfully destroyed, or `false` in cases where the proxy has already been destroyed, or is not a valid proxy.
 
 ## Notes
 
