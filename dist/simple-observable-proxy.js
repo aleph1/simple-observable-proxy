@@ -1,4 +1,4 @@
-/*! simple observable proxy v1.0.0 | MIT License | © 2022 Aleph1 Technologies Inc */
+/*! simple observable proxy v1.1.0 | MIT License | © 2022 Aleph1 Technologies Inc */
 const observables = new Set(),
   observablesByProxy = new Map(),
   observersByProxy = new Map(),
@@ -9,7 +9,9 @@ const observables = new Set(),
       observersByProxy.get(proxy).forEach((callback) => callback());
     }),
       proxiesToNotify.clear(),
-      window.requestAnimationFrame(tick);
+      "undefined" != typeof window && window.requestAnimationFrame
+        ? window.requestAnimationFrame(tick)
+        : setTimeout(tick, 16);
   },
   makeObservableProxy = (data, rootProxy) => {
     if (observables.has(data))
