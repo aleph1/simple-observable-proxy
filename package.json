@@ -8,7 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "build": "node scripts/build.mjs",
+    "build": "rollup --config",
     "test": "jest --coverage"
   },
   "repository": {
