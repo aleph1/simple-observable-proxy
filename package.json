@@ -16,14 +16,16 @@
     "url": "git+https://github.com/aleph1/simple-observable-proxy.git"
   },
   "keywords": [
-    "proxy",
-    "proxies",
     "observable",
     "observe",
+    "proxy",
+    "proxies",
     "reactive",
-    "state",
     "signal",
     "signals",
+    "state",
+    "store",
+    "typescript",
     "es6"
   ],
   "author": {
