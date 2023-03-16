@@ -43,10 +43,11 @@ const observables = new Set(),
         if (observablesByProxy.has(value))
           throw new Error("Can’t nest observables");
         ((data) =>
-          !!data &&
-          (Array.isArray(data) ||
-            ("object" == typeof data &&
-              data.constructor === objectConstructor)))(value) &&
+          Array.isArray(data) ||
+          ((data) =>
+            !!data &&
+            "object" == typeof data &&
+            data.constructor === objectConstructor)(data))(value) &&
           (proxy[key] = makeObservableProxy(value, rootProxy || proxy));
       }),
       (observers = new Set()),
@@ -58,11 +59,12 @@ const observables = new Set(),
   },
   observable = (data) =>
     ((data) =>
-      !!data &&
-      (Array.isArray(data) ||
-        ("object" == typeof data && data.constructor === objectConstructor)))(
-      data
-    ) && makeObservableProxy(data),
+      Array.isArray(data) ||
+      ((data) =>
+        !!data &&
+        "object" == typeof data &&
+        data.constructor === objectConstructor)(data))(data) &&
+    makeObservableProxy(data),
   observe = (observableProxy, callback) => {
     const observers = observersByProxy.get(observableProxy);
     return (
