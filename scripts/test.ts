@@ -1,4 +1,4 @@
-import { observable, observe, unobserve, destroy } from '../index';
+import { observable, observe, unobserve, destroy, PlainObject } from '../src/index';
 
 function createState() {
   return {
@@ -13,7 +13,7 @@ function createState() {
 }
 
 test('Creates observable from plain object', () => {
-  const state = observable(createState());
+  const state = observable(createState()) as PlainObject;
   expect(state.array).toEqual([1, 2, 3]);
   expect(state.boolean).toEqual(true);
   expect(state.number).toEqual(0);
@@ -24,12 +24,12 @@ test('Creates observable from plain object', () => {
 });
 
 test('Creates observable from array', () => {
-  const state = observable([1, 2, 3]);
+  const state = observable([1, 2, 3]) as PlainObject;
   expect(state).toEqual([1, 2, 3]);
 });
 
 test('Creates observable from sparse array', () => {
-  const state = observable([1, , 3]);
+  const state = observable([1, , 3]) as PlainObject;
   expect(state.length).toEqual(3);
   expect(state[0]).toEqual(1);
   expect(state[1]).toEqual(undefined);
@@ -67,14 +67,14 @@ test('observable returns false when passed instance of built-in class', () => {
 });
 
 test('observable returns false when passed instance of custom class', () => {
-  const customClass = function(){};
+  class customClass {constructor(){}};
   const state = observable(new customClass());
   expect(state).toEqual(false);
 });
 
 test('Deferred callback when adding object key', done => {
   const callback = jest.fn();
-  const state = observable(createState());
+  const state = observable(createState()) as PlainObject;
   observe(state, callback);
   state.string2 = 'test2';
   expect(callback).not.toBeCalled();
@@ -86,7 +86,7 @@ test('Deferred callback when adding object key', done => {
 
 test('Deferred callback when modifying object key', done => {
   const callback = jest.fn();
-  const state = observable(createState());
+  const state = observable(createState()) as PlainObject;
   observe(state, callback);
   expect(state.boolean).toEqual(true);
   state.boolean = false;
@@ -99,7 +99,7 @@ test('Deferred callback when modifying object key', done => {
 
 test('Deferred callback when deleting object key', done => {
   const callback = jest.fn();
-  const state = observable(createState());
+  const state = observable(createState()) as PlainObject;
   observe(state, callback);
   delete state.string;
   expect(callback).not.toBeCalled();
@@ -111,7 +111,7 @@ test('Deferred callback when deleting object key', done => {
 
 test('Deferred callback when modifying mutliple object keys', done => {
   const callback = jest.fn();
-  const state = observable(createState());
+  const state = observable(createState()) as PlainObject;
   observe(state, callback);
   state.boolean = false;
   state.number = 1;
@@ -125,7 +125,7 @@ test('Deferred callback when modifying mutliple object keys', done => {
 
 test('Deferred callback when modifying object using Object.assign()', done => {
   const callback = jest.fn();
-  const state = observable(createState());
+  const state = observable(createState()) as PlainObject;
   observe(state, callback);
   Object.assign(state, {
     boolean: false,
@@ -141,7 +141,7 @@ test('Deferred callback when modifying object using Object.assign()', done => {
 
 test('Deferred callback when modifying array using pop', done => {
   const callback = jest.fn();
-  const state = observable([1, 2, 3]);
+  const state = observable([1, 2, 3]) as PlainObject;
   observe(state, callback);
   expect(state).toEqual([1, 2, 3]);
   state.pop();
@@ -155,7 +155,7 @@ test('Deferred callback when modifying array using pop', done => {
 
 test('Deferred callback when modifying array using push', done => {
   const callback = jest.fn();
-  const state = observable([1, 2, 3]);
+  const state = observable([1, 2, 3]) as PlainObject;
   observe(state, callback);
   expect(state).toEqual([1, 2, 3]);
   state.push(4);
@@ -169,7 +169,7 @@ test('Deferred callback when modifying array using push', done => {
 
 test('Deferred callback when modifying array using index', done => {
   const callback = jest.fn();
-  const state = observable([1, 2, 3]);
+  const state = observable([1, 2, 3]) as PlainObject;
   observe(state, callback);
   expect(state).toEqual([1, 2, 3]);
   state[0] = 0;
@@ -183,7 +183,7 @@ test('Deferred callback when modifying array using index', done => {
 
 test('Deferred callback when modifying array using length', done => {
   const callback = jest.fn();
-  const state = observable([1, 2, 3]);
+  const state = observable([1, 2, 3]) as PlainObject;
   observe(state, callback);
   expect(state).toEqual([1, 2, 3]);
   state.length = 1;
@@ -197,7 +197,7 @@ test('Deferred callback when modifying array using length', done => {
 
 test('Deferred callback when modifying nested array', done => {
   const callback = jest.fn();
-  const state = observable(createState());
+  const state = observable(createState()) as PlainObject;
   observe(state, callback);
   expect(state.array).toEqual([1, 2, 3]);
   state.array.push(4);
@@ -211,7 +211,7 @@ test('Deferred callback when modifying nested array', done => {
 
 test('Deferred callback when modifying nested object', done => {
   const callback = jest.fn();
-  const state = observable(createState());
+  const state = observable(createState()) as PlainObject;
   observe(state, callback);
   expect(state.array).toEqual([1, 2, 3]);
   state.object.string2 = 'test2';
@@ -225,7 +225,7 @@ test('Deferred callback when modifying nested object', done => {
 test('Multiple deferred callbacks when modifying object', done => {
   const callback1 = jest.fn();
   const callback2 = jest.fn();
-  const state = observable(createState());
+  const state = observable(createState()) as PlainObject;
   observe(state, callback1);
   observe(state, callback2);
   state.string = 'test2';
@@ -238,7 +238,7 @@ test('Multiple deferred callbacks when modifying object', done => {
 
 test('No callback when object is unobserved', done => {
   const callback = jest.fn();
-  const state = observable(createState());
+  const state = observable(createState()) as PlainObject;
   observe(state, callback);
   state.string = 'test2';
   jest.advanceTimersByTime(FRAME_TIME);
@@ -254,7 +254,7 @@ test('No callback when object is unobserved', done => {
 
 test('Deferred callback when object is reobserved', done => {
   const callback = jest.fn();
-  const state = observable(createState());
+  const state = observable(createState()) as PlainObject;
   observe(state, callback);
   state.string = 'test2';
   jest.advanceTimersByTime(FRAME_TIME);
