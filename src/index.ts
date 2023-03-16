@@ -19,7 +19,8 @@ const tick = ():void => {
     observersByProxy.get(proxy).forEach((callback: ObservableCallback) => callback());
   });
   proxiesToNotify.clear();
-  window.requestAnimationFrame(tick);
+  if(typeof window !== "undefined" && window.requestAnimationFrame) window.requestAnimationFrame(tick);
+  else setTimeout(tick, 16);
 };
 
 const makeObservableProxy = (data: any, rootProxy?: any): PlainObject => {
