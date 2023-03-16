@@ -2,8 +2,10 @@
   "name": "simple-observable-proxy",
   "version": "1.0.0",
   "description": "Simple observable ES6 proxy.",
-  "main": "lib/index.js",
   "browser": "dist/simple-observable-proxy.js",
+  "main": "lib/index.js",
+  "module": "lib/index.mjs",
+  "types": "lib/index.d.ts",
   "directories": {
     "test": "test"
   },
