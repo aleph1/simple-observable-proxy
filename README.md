@@ -87,14 +87,12 @@ Cleans up the proxy. Returns `true` if successfully destroyed, or `false` in cas
 
 ## Notes
 
-Attempting to nest one observable within another will throw an error.
-
-When multiple values are modified on an observable proxy only one notification is sent per callback on the next requestAnimationFrame. For example:
+When a value is modified on an observable proxy, its updated values is available immediately. When multiple values are modified on the observable proxy each registered callback will be called only once using requestAnimationFrame in the browser, or after 16ms in a Node environment. For example:
 
 ```js
 import { observable, observe } from 'simple-observable-proxy';
 const stateChange = () => {
-  console.log('state changed')
+  console.log('state changed callback')
 };
 const state = observable({
   test: 'test',
@@ -106,7 +104,12 @@ state.nested = [1, 2, 3]; // added key
 delete state.test2; // delete key
 
 // despite multiple changes to state, stateChange will 
-// only be called once on next requestAnimationFrame
+// only be called once on next requestAnimationFrame or after 16ms
+console.log('before state changed callback');
+
+// output in the console should be
+// 'before state changed callback'
+// 'state changed callback'
 ```
 
 ## Roadmap
