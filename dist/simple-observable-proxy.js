@@ -1,9 +1,9 @@
-/*! simple observable proxy v1.1.0 | MIT License | © 2022 Aleph1 Technologies Inc */
+/*! simple observable proxy v2.0.0 | MIT License | © 2022 Aleph1 Technologies Inc */
 const observables = new Set(),
   observablesByProxy = new Map(),
   observersByProxy = new Map(),
   proxiesToNotify = new Set(),
-  objectConstructor = {}.constructor,
+  plainObjectConstructor = {}.constructor,
   tick = () => {
     proxiesToNotify.forEach((proxy) => {
       observersByProxy.get(proxy).forEach((callback) => callback());
@@ -15,7 +15,7 @@ const observables = new Set(),
   },
   makeObservableProxy = (data, rootProxy) => {
     if (observables.has(data))
-      throw new Error("Can’t observe Object or Array again");
+      throw new Error("Only Arrays and plain Objects are observable");
     if (observablesByProxy.has(data))
       throw new Error("rootProxy isn’t an observable");
     let observers;
@@ -49,7 +49,7 @@ const observables = new Set(),
           ((data) =>
             !!data &&
             "object" == typeof data &&
-            data.constructor === objectConstructor)(data))(value) &&
+            data.constructor === plainObjectConstructor)(data))(value) &&
           (proxy[key] = makeObservableProxy(value, rootProxy || proxy));
       }),
       (observers = new Set()),
@@ -59,14 +59,18 @@ const observables = new Set(),
       proxy
     );
   },
-  observable = (data) =>
-    ((data) =>
-      Array.isArray(data) ||
+  observable = (data) => {
+    if (
       ((data) =>
-        !!data &&
-        "object" == typeof data &&
-        data.constructor === objectConstructor)(data))(data) &&
-    makeObservableProxy(data),
+        Array.isArray(data) ||
+        ((data) =>
+          !!data &&
+          "object" == typeof data &&
+          data.constructor === plainObjectConstructor)(data))(data)
+    )
+      return makeObservableProxy(data);
+    throw new Error("Only Arrays and plain Objects are observable");
+  },
   observe = (observableProxy, callback) => {
     const observers = observersByProxy.get(observableProxy);
     return (

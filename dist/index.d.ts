@@ -1,9 +1,8 @@
-export type PlainObject = {
+export type Observable = {
     [name: string]: any;
 };
-type ObservableCallback = () => void;
-export declare const observable: (data: any) => PlainObject | boolean;
-export declare const observe: (observableProxy: any, callback: ObservableCallback) => boolean;
-export declare const unobserve: (observableProxy: any | PlainObject, callback: ObservableCallback) => boolean;
-export declare const destroy: (observableProxy: any) => boolean;
-export {};
+export type ObservableCallback = () => void;
+export declare const observable: (data: Observable) => Observable;
+export declare const observe: (observableProxy: Observable, callback: ObservableCallback) => boolean;
+export declare const unobserve: (observableProxy: Observable, callback: ObservableCallback) => boolean;
+export declare const destroy: (observableProxy: Observable) => boolean;
