@@ -1,9 +1,9 @@
 # Simple Observable Proxy
 ### Simple Observable Proxy is a dependency-free library for JavaScript, that allows for observation of arrays and objects that are either flat or deep.
 
-For objects, changing values, as well as adding, editing, or deleting keys results in a callback signal. For arrays changing values, direct modification using \[\], methods that change the array (pop, push, shift, unshift, etc.), or modifying length results in a callback signal. Multiple observers can be created per observable, and all signals are queued and sent on requestAnimationFrame.
+For objects, changing values, as well as adding, editing, or deleting keys results in a callback signal. For arrays changing values, direct modification using \[\], methods that change the array (pop, push, shift, unshift, etc.), or modifying length results in a callback signal. Multiple observers can be created per observable, and all signals are queued and sent using requestAnimationFrame in the browser, and an interval of 16 milliseconds in a node environment.
 
-Simple Observable Proxy is written in TypeScript and is intended to be a very small library (approximately 650 bytes when minified and gzipped), and, as such, it does not report on specific differences between the current and prior state of the observed object or array.
+Simple Observable Proxy is written in TypeScript and compiles as CommonJS and ESM. It is intended to be a very small library (approximately 700 bytes when minified and gzipped), and, as such, it does not report on specific differences between the current and prior state of the observed object or array.
 
 ## Installation
 
@@ -69,21 +69,23 @@ observe(sharedState, sharedStateCallback2);
 
 ## Methods
 
-### observable(plainObjectOrArray)
-Converts a plain object or array to an instance of `Proxy` and returns it. If any other value is passed to the function it returns `false`.
+### observable(arrayOrPlainObject: Observable): Observable
+Converts an `Array` or plain `Object` (not an instance of a class) to an instance of `Proxy` and returns it. There are numerous cases where this function will throw an Error:
 
-### observe(proxy, callbackFn)
+- If any value other than an `Array` or plain `Object` is passed.
+- If the `Array` or plain `Object` contains an instance of a class.
+- If the `Array` or plain `Object` contains an `Array` or plain `Object` that has already been passed to `observable()`.
+
+### observe(proxy: Observable, callbackFn: () => {}): boolean
 Subscribes to proxy changes using callbackFn, Returns `true` if successfully subscribed, or `false` in cases where the proxy or callback function is invalid, or the callback is already registered.
 
-### unobserve(proxy, callbackFn)
+### unobserve(proxy: Observable, callbackFn: () => {}): boolean
 Unsubscribes from proxy changes using callbackFn. Returns `true` if successfully unsubscribed, or `false` in cases where the proxy or callback function is invalid.
 
-### destroy(proxy)
+### destroy(proxy: Observable): boolean
 Cleans up the proxy. Returns `true` if successfully destroyed, or `false` in cases where the proxy has already been destroyed, or is not a valid proxy.
 
 ## Notes
-
-Simple Observable Proxy maintains a list of sources to prevent observing the same object or array more than once. Attempting to do so will throw an error.
 
 Attempting to nest one observable within another will throw an error.
 
@@ -108,10 +110,6 @@ delete state.test2; // delete key
 ```
 
 ## Roadmap
-
-Version 2.0 will include the following changes:
-
-- observable will throw errors when trying to observe a value other than an array or plain object
 
 Version 3.0 will consider the following changes:
 
