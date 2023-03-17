@@ -114,7 +114,7 @@ console.log('before state changed callback');
 
 ## Roadmap
 
-Version 3.0 will consider the following changes:
+Version 3.0 will consider the following change:
 
 - Instances of classes are observable
 
