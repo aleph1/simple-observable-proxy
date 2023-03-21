@@ -95,7 +95,7 @@ describe('observable()', () => {
 
 describe('observe()', () => {
 
-  test('triggers deferred callback when adding object key', done => {
+  test('Triggers deferred callback when adding object key', done => {
     const callback = jest.fn();
     const state = observable(createState());
     observe(state, callback);
@@ -107,7 +107,7 @@ describe('observe()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying object key', done => {
+  test('Triggers deferred callback when modifying object key', done => {
     const callback = jest.fn();
     const state = observable(createState());
     observe(state, callback);
@@ -120,7 +120,7 @@ describe('observe()', () => {
     done();
   });
 
-  test('triggers deferred callback when deleting object key', done => {
+  test('Triggers deferred callback when deleting object key', done => {
     const callback = jest.fn();
     const state = observable(createState());
     observe(state, callback);
@@ -132,7 +132,7 @@ describe('observe()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying mutliple object keys', done => {
+  test('Triggers deferred callback when modifying mutliple object keys', done => {
     const callback = jest.fn();
     const state = observable(createState());
     observe(state, callback);
@@ -146,7 +146,7 @@ describe('observe()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying object using Object.assign()', done => {
+  test('Triggers deferred callback when modifying object using Object.assign()', done => {
     const callback = jest.fn();
     const state = observable(createState());
     observe(state, callback);
@@ -162,7 +162,7 @@ describe('observe()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying array using pop', done => {
+  test('Triggers deferred callback when modifying array using pop', done => {
     const callback = jest.fn();
     const state = observable([1, 2, 3]);
     observe(state, callback);
@@ -176,7 +176,7 @@ describe('observe()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying array using push', done => {
+  test('Triggers deferred callback when modifying array using push', done => {
     const callback = jest.fn();
     const state = observable([1, 2, 3]);
     observe(state, callback);
@@ -190,7 +190,7 @@ describe('observe()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying array using index', done => {
+  test('Triggers deferred callback when modifying array using index', done => {
     const callback = jest.fn();
     const state = observable([1, 2, 3]);
     observe(state, callback);
@@ -204,7 +204,7 @@ describe('observe()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying array using length', done => {
+  test('Triggers deferred callback when modifying array using length', done => {
     const callback = jest.fn();
     const state = observable([1, 2, 3]);
     observe(state, callback);
@@ -218,7 +218,7 @@ describe('observe()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying nested array', done => {
+  test('Triggers deferred callback when modifying nested array', done => {
     const callback = jest.fn();
     const state = observable(createState());
     observe(state, callback);
@@ -232,7 +232,7 @@ describe('observe()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying nested object', done => {
+  test('Triggers deferred callback when modifying nested object', done => {
     const callback = jest.fn();
     const state = observable(createState());
     observe(state, callback);
@@ -245,7 +245,7 @@ describe('observe()', () => {
     done();
   });
 
-  test('triggers deferred callback for multiple observers', done => {
+  test('Triggers deferred callback for multiple observers', done => {
     const callback1 = jest.fn();
     const callback2 = jest.fn();
     const state = observable(createState());
@@ -269,7 +269,7 @@ describe('observe()', () => {
 
 describe('on()', () => {
 
-  test('triggers deferred callback when adding object key', done => {
+  test('Triggers deferred callback when adding object key', done => {
     const callback = jest.fn();
     const state = observable(createState());
     on(state, ObservableEvents.change, callback);
@@ -281,7 +281,7 @@ describe('on()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying object key', done => {
+  test('Triggers deferred callback when modifying object key', done => {
     const callback = jest.fn();
     const state = observable(createState());
     on(state, ObservableEvents.change, callback);
@@ -294,7 +294,7 @@ describe('on()', () => {
     done();
   });
 
-  test('triggers deferred callback when deleting object key', done => {
+  test('Triggers deferred callback when deleting object key', done => {
     const callback = jest.fn();
     const state = observable(createState());
     on(state, ObservableEvents.change, callback);
@@ -306,7 +306,7 @@ describe('on()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying mutliple object keys', done => {
+  test('Triggers deferred callback when modifying mutliple object keys', done => {
     const callback = jest.fn();
     const state = observable(createState());
     on(state, ObservableEvents.change, callback);
@@ -320,7 +320,7 @@ describe('on()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying object using Object.assign()', done => {
+  test('Triggers deferred callback when modifying object using Object.assign()', done => {
     const callback = jest.fn();
     const state = observable(createState());
     on(state, ObservableEvents.change, callback);
@@ -336,7 +336,7 @@ describe('on()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying array using pop', done => {
+  test('Triggers deferred callback when modifying array using pop', done => {
     const callback = jest.fn();
     const state = observable([1, 2, 3]);
     on(state, ObservableEvents.change, callback);
@@ -350,7 +350,7 @@ describe('on()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying array using push', done => {
+  test('Triggers deferred callback when modifying array using push', done => {
     const callback = jest.fn();
     const state = observable([1, 2, 3]);
     on(state, ObservableEvents.change, callback);
@@ -364,7 +364,7 @@ describe('on()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying array using index', done => {
+  test('Triggers deferred callback when modifying array using index', done => {
     const callback = jest.fn();
     const state = observable([1, 2, 3]);
     on(state, ObservableEvents.change, callback);
@@ -378,7 +378,7 @@ describe('on()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying array using length', done => {
+  test('Triggers deferred callback when modifying array using length', done => {
     const callback = jest.fn();
     const state = observable([1, 2, 3]);
     on(state, ObservableEvents.change, callback);
@@ -392,7 +392,7 @@ describe('on()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying nested array', done => {
+  test('Triggers deferred callback when modifying nested array', done => {
     const callback = jest.fn();
     const state = observable(createState());
     on(state, ObservableEvents.change, callback);
@@ -406,7 +406,7 @@ describe('on()', () => {
     done();
   });
 
-  test('triggers deferred callback when modifying nested object', done => {
+  test('Triggers deferred callback when modifying nested object', done => {
     const callback = jest.fn();
     const state = observable(createState());
     on(state, ObservableEvents.change, callback);
@@ -419,7 +419,7 @@ describe('on()', () => {
     done();
   });
 
-  test('triggers deferred callback when reobserved', done => {
+  test('Triggers deferred callback when reobserved', done => {
     const callback = jest.fn();
     const state = observable(createState());
     observe(state, callback);
