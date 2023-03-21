@@ -76,11 +76,17 @@ Converts an `Array` or plain `Object` (not an instance of a class) to an instanc
 - If the `Array` or plain `Object` contains an instance of a class.
 - If the `Array` or plain `Object` contains an `Array` or plain `Object` that has already been passed to `observable()`.
 
-### observe(proxy: Observable, callbackFn: () => {}): boolean
-Subscribes to proxy changes using callbackFn, Returns `true` if successfully subscribed, or `false` in cases where the proxy or callback function is invalid, or the callback is already registered.
+### on(proxy: Observable, ObservableEventType: "change" | "destroy", callbackFn: () => {}): boolean
+Subscribes to either the change or destroy event using callbackFn, Returns `true` if successfully subscribed, or `false` in cases where the proxy or callback function is invalid, or the callback is already registered.
 
-### unobserve(proxy: Observable, callbackFn: () => {}): boolean
-Unsubscribes from proxy changes using callbackFn. Returns `true` if successfully unsubscribed, or `false` in cases where the proxy or callback function is invalid.
+### off(proxy: Observable, ObservableEventType: "change" | "destroy", callbackFn: () => {}): boolean
+Unsubscribes from either the change or destroy event using callbackFn. Returns `true` if successfully unsubscribed, or `false` in cases where the proxy or callback function is invalid.
+
+### DEPRECATED observe(proxy: Observable, callbackFn: () => {}): boolean
+Shorthand method that calls observe(proxy, "change", callbackFn). Maintained for backwards compatibility with v1, but will be dropped in a future release.
+
+### DEPRECATED unobserve(proxy: Observable, callbackFn: () => {}): boolean
+Shorthand method that calls unobserve(proxy, "change", callbackFn). Maintained for backwards compatibility with v1, but will be dropped in a future release.
 
 ### destroy(proxy: Observable): boolean
 Cleans up the proxy. Returns `true` if successfully destroyed, or `false` in cases where the proxy has already been destroyed, or is not a valid proxy.
