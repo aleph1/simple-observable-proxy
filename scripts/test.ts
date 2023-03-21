@@ -267,6 +267,181 @@ describe('observe()', () => {
 
 });
 
+describe('on()', () => {
+
+  test('triggers deferred callback when adding object key', done => {
+    const callback = jest.fn();
+    const state = observable(createState());
+    on(state, ObservableEvents.change, callback);
+    state.string2 = 'test2';
+    expect(callback).not.toBeCalled();
+    jest.advanceTimersByTime(global.FRAME_TIME);
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(state.string2).toEqual('test2');
+    done();
+  });
+
+  test('triggers deferred callback when modifying object key', done => {
+    const callback = jest.fn();
+    const state = observable(createState());
+    on(state, ObservableEvents.change, callback);
+    expect(state.boolean).toEqual(true);
+    state.boolean = false;
+    expect(callback).not.toBeCalled();
+    jest.advanceTimersByTime(global.FRAME_TIME);
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(state.boolean).toEqual(false);
+    done();
+  });
+
+  test('triggers deferred callback when deleting object key', done => {
+    const callback = jest.fn();
+    const state = observable(createState());
+    on(state, ObservableEvents.change, callback);
+    delete state.string;
+    expect(callback).not.toBeCalled();
+    jest.advanceTimersByTime(global.FRAME_TIME);
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(state.string).toEqual(undefined);
+    done();
+  });
+
+  test('triggers deferred callback when modifying mutliple object keys', done => {
+    const callback = jest.fn();
+    const state = observable(createState());
+    on(state, ObservableEvents.change, callback);
+    state.boolean = false;
+    state.number = 1;
+    expect(callback).not.toBeCalled();
+    jest.advanceTimersByTime(global.FRAME_TIME);
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(state.boolean).toEqual(false);
+    expect(state.number).toEqual(1);
+    done();
+  });
+
+  test('triggers deferred callback when modifying object using Object.assign()', done => {
+    const callback = jest.fn();
+    const state = observable(createState());
+    on(state, ObservableEvents.change, callback);
+    Object.assign(state, {
+      boolean: false,
+      number: 1
+    });
+    expect(callback).not.toBeCalled();
+    jest.advanceTimersByTime(global.FRAME_TIME);
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(state.boolean).toEqual(false);
+    expect(state.number).toEqual(1);
+    done();
+  });
+
+  test('triggers deferred callback when modifying array using pop', done => {
+    const callback = jest.fn();
+    const state = observable([1, 2, 3]);
+    on(state, ObservableEvents.change, callback);
+    expect(state).toEqual([1, 2, 3]);
+    state.pop();
+    expect(callback).not.toBeCalled();
+    jest.advanceTimersByTime(global.FRAME_TIME);
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(state.length).toEqual(2);
+    expect(state).toEqual([1, 2]);
+    done();
+  });
+
+  test('triggers deferred callback when modifying array using push', done => {
+    const callback = jest.fn();
+    const state = observable([1, 2, 3]);
+    on(state, ObservableEvents.change, callback);
+    expect(state).toEqual([1, 2, 3]);
+    state.push(4);
+    expect(callback).not.toBeCalled();
+    jest.advanceTimersByTime(global.FRAME_TIME);
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(state.length).toEqual(4);
+    expect(state).toEqual([1, 2, 3, 4]);
+    done();
+  });
+
+  test('triggers deferred callback when modifying array using index', done => {
+    const callback = jest.fn();
+    const state = observable([1, 2, 3]);
+    on(state, ObservableEvents.change, callback);
+    expect(state).toEqual([1, 2, 3]);
+    state[0] = 0;
+    expect(callback).not.toBeCalled();
+    jest.advanceTimersByTime(global.FRAME_TIME);
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(state.length).toEqual(3);
+    expect(state).toEqual([0, 2, 3]);
+    done();
+  });
+
+  test('triggers deferred callback when modifying array using length', done => {
+    const callback = jest.fn();
+    const state = observable([1, 2, 3]);
+    on(state, ObservableEvents.change, callback);
+    expect(state).toEqual([1, 2, 3]);
+    state.length = 1;
+    expect(callback).not.toBeCalled();
+    jest.advanceTimersByTime(global.FRAME_TIME);
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(state.length).toEqual(1);
+    expect(state).toEqual([1]);
+    done();
+  });
+
+  test('triggers deferred callback when modifying nested array', done => {
+    const callback = jest.fn();
+    const state = observable(createState());
+    on(state, ObservableEvents.change, callback);
+    expect(state.array).toEqual([1, 2, 3]);
+    state.array.push(4);
+    expect(callback).not.toBeCalled();
+    jest.advanceTimersByTime(global.FRAME_TIME);
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(state.array.length).toEqual(4);
+    expect(state.array).toEqual([1, 2, 3, 4]);
+    done();
+  });
+
+  test('triggers deferred callback when modifying nested object', done => {
+    const callback = jest.fn();
+    const state = observable(createState());
+    on(state, ObservableEvents.change, callback);
+    expect(state.array).toEqual([1, 2, 3]);
+    state.object.string2 = 'test2';
+    expect(callback).not.toBeCalled();
+    jest.advanceTimersByTime(global.FRAME_TIME);
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(state.object.string2).toEqual('test2');
+    done();
+  });
+
+  test('triggers deferred callback when reobserved', done => {
+    const callback = jest.fn();
+    const state = observable(createState());
+    observe(state, callback);
+    state.string = 'test2';
+    jest.advanceTimersByTime(global.FRAME_TIME);
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(state.string).toEqual('test2');
+    unobserve(state, callback);
+    state.string = 'test3';
+    jest.advanceTimersByTime(global.FRAME_TIME);
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(state.string).toEqual('test3');
+    observe(state, callback);
+    state.string = 'test4';
+    jest.advanceTimersByTime(global.FRAME_TIME);
+    expect(callback).toHaveBeenCalledTimes(2);
+    expect(state.string).toEqual('test4');
+    done();
+  });
+
+});
+
 describe('unobserve()', () => {
 
   test('No callback when object is unobserved', done => {
