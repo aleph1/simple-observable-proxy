@@ -1,3 +1,4 @@
+global.BROWSER = false;
 global.FRAME_TIME = 16;
 
 Object.defineProperty(window, 'navigator', {value: 'node'});
