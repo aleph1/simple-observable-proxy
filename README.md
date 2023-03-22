@@ -3,7 +3,7 @@
 
 For objects, changing values, as well as adding, editing, or deleting keys results in a callback signal. For arrays changing values, direct modification using \[\], methods that change the array (pop, push, shift, unshift, etc.), or modifying length results in a callback signal. Multiple observers can be created per observable, and all signals are queued and sent using requestAnimationFrame in the browser, and an interval of 16 milliseconds in a node environment.
 
-Simple Observable Proxy is written in TypeScript and compiles as CommonJS and ESM. It is intended to be a very small library (approximately 700 bytes when minified and gzipped), and, as such, it does not report on specific differences between the current and prior state of the observed object or array.
+Simple Observable Proxy is written in TypeScript and compiles as CommonJS and ESM. It is intended to be a very small library (less than 800 bytes when minified and gzipped), and, as such, it does not report on specific differences between the current and prior state of the observed object or array.
 
 ## Installation
 
