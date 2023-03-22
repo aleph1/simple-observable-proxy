@@ -43,8 +43,8 @@ const tick = (): void => {
 };
 
 const makeObservableProxy = (data: Observable, rootProxy?: Observable): Observable => {
-  if(observables.has(data)) throw new Error('Only Arrays and plain Objects are observable');
-  if(observablesByProxy.has(data)) throw new Error('rootProxy isn’t an observable');
+  if(observables.has(data)) throw new Error('data is alreaby an observable');
+  if(rootProxy && !observablesByProxy.has(rootProxy)) throw new Error('rootProxy isn’t an observable');
   let observers: ObservableCallbackObject;
   const proxy = new Proxy(data, {
     get(target, key): any {
