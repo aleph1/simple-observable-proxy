@@ -10,9 +10,7 @@
     "test": "test"
   },
   "scripts": {
-    "mjs": "tsc -d && mv lib/index.js lib/index.mjs",
-    "cjs": "tsc -m commonjs",
-    "build": "npm run mjs && npm run cjs && rollup --config",
+    "build": "rollup --config",
     "test": "jest --coverage"
   },
   "repository": {
