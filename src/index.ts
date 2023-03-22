@@ -70,12 +70,12 @@ const makeObservableProxy = (data: Observable, rootProxy?: Observable): Observab
     }
   });
   observables.add(data);
+  observablesByProxy.set(proxy, data);
   (Array.isArray(data) ? [...Array(data.length).keys()] : Object.keys(data)).forEach(key => {
     const value = data[key as string];
     if(observablesByProxy.has(value)) throw new Error('Can’t nest observables');
     if(/*#__INLINE__*/canBeObservable(value)) proxy[key] = makeObservableProxy(value, rootProxy || proxy);
   });
-  observablesByProxy.set(proxy, data);
   observersByProxy.set(proxy, observers = {
     change: new Set(),
     destroy: new Set()
