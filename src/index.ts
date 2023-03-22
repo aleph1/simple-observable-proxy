@@ -38,7 +38,7 @@ const tick = (): void => {
     if(observers) observers.destroy.forEach((callback: ObservableCallback) => callback());
   });
   destroyedProxies.clear();
-  if(typeof window !== 'undefined' && window.requestAnimationFrame) window.requestAnimationFrame(tick);
+  if(BROWSER) window.requestAnimationFrame(tick);
   else setTimeout(tick, 16);
 };
 
