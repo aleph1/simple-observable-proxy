@@ -17,9 +17,7 @@ const ObservableEvents = { change: "change", destroy: "destroy" },
         observers && observers.destroy.forEach((callback) => callback());
       }),
       destroyedProxies.clear(),
-      "undefined" != typeof window && window.requestAnimationFrame
-        ? window.requestAnimationFrame(tick)
-        : setTimeout(tick, 16);
+      window.requestAnimationFrame(tick);
   },
   makeObservableProxy = (data, rootProxy) => {
     if (observables.has(data)) throw new Error("data is alreaby an observable");
