@@ -22,9 +22,8 @@ const ObservableEvents = { change: "change", destroy: "destroy" },
         : setTimeout(tick, 16);
   },
   makeObservableProxy = (data, rootProxy) => {
-    if (observables.has(data))
-      throw new Error("Only Arrays and plain Objects are observable");
-    if (observablesByProxy.has(data))
+    if (observables.has(data)) throw new Error("data is alreaby an observable");
+    if (rootProxy && !observablesByProxy.has(rootProxy))
       throw new Error("rootProxy isn’t an observable");
     let observers;
     const proxy = new Proxy(data, {
@@ -45,6 +44,8 @@ const ObservableEvents = { change: "change", destroy: "destroy" },
         (delete target[key], changedProxies.add(rootProxy || proxy), !0),
     });
     return (
+      observables.add(data),
+      observablesByProxy.set(proxy, data),
       (Array.isArray(data)
         ? [...Array(data.length).keys()]
         : Object.keys(data)
@@ -60,8 +61,6 @@ const ObservableEvents = { change: "change", destroy: "destroy" },
             data.constructor === plainObjectConstructor)(data))(value) &&
           (proxy[key] = makeObservableProxy(value, rootProxy || proxy));
       }),
-      observables.add(data),
-      observablesByProxy.set(proxy, data),
       observersByProxy.set(
         proxy,
         (observers = { change: new Set(), destroy: new Set() })
