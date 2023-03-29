@@ -1,5 +1,5 @@
 export type Observable = {[name: string]: any;};
-export type ObservableCallback = () => void;
+export type ObservableCallback = (proxy: Observable) => void;
 export const ObservableEvents = {
     change: 'change',
     destroy: 'destroy',
@@ -30,12 +30,12 @@ const canBeObservable = (data: Observable): boolean => Array.isArray(data) || /*
 const tick = (): void => {
   changedProxies.forEach(proxy => {
     const observers = observersByProxy.get(proxy);
-    if(observers) observers.change.forEach((callback: ObservableCallback) => callback());
+    if(observers) observers.change.forEach((callback: ObservableCallback) => callback(proxy));
   });
   changedProxies.clear();
   destroyedProxies.forEach(proxy => {
     const observers = observersByProxy.get(proxy);
-    if(observers) observers.destroy.forEach((callback: ObservableCallback) => callback());
+    if(observers) observers.destroy.forEach((callback: ObservableCallback) => callback(proxy));
   });
   destroyedProxies.clear();
   if(BROWSER) window.requestAnimationFrame(tick);
