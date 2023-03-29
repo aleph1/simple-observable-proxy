@@ -23,7 +23,7 @@ Objects and arrays can also be observed and unobserved.
 
 ```js
 import { observable, observe, unobserve } from 'simple-observable-proxy';
-const stateChange = () => {
+const stateChange = state => {
   console.log('stateChange()');
 }
 const state = observable({
@@ -55,11 +55,11 @@ const sharedState = observable([
   }
 ]);
 
-const sharedStateCallback1 = () => {
+const sharedStateCallback1 = state => {
   console.log('sharedStateCallback1()');
 };
 
-const sharedStateCallback2 = () => {
+const sharedStateCallback2 = state => {
   console.log('sharedStateCallback2()');
 };
 
