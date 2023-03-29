@@ -1,7 +1,7 @@
 export type Observable = {
     [name: string]: any;
 };
-export type ObservableCallback = () => void;
+export type ObservableCallback = (proxy: Observable) => void;
 export declare const ObservableEvents: {
     readonly change: "change";
     readonly destroy: "destroy";
