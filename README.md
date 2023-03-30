@@ -91,6 +91,26 @@ Shorthand method that calls unobserve(proxy, "change", callbackFn). Maintained f
 ### destroy(proxy: Observable): boolean
 Cleans up the proxy. Returns `true` if successfully destroyed, or `false` in cases where the proxy has already been destroyed, or is not a valid proxy.
 
+## Migration from 1.x to 2.x
+In order to ensure that 1.x code does not break, the `observe` and `unobserve` methods have been retained as part of the 2.x codeset, but are marked as deprecated. If you wish to convert these to the 2.x syntax, you shoud modify your code as follows:
+
+1. Where you import the `observe` and `unobserve` methods, instead import the `on` and `off` methods, and the `ObservableEvents` object.
+2. Replace any calls to `observe(yourState, yourChangeCallback)` to `on(yourState, ObservableEvents.change, yourChangeCallback)`, and any calls to `unobserve(yourState, yourChangeCallback)` to `off(yourState, ObservableEvents.change, yourChangeCallback)`.
+
+If you wish to recreate the deprecated `observe` and `unobserve` methods, you can add the following to your codeset.
+
+### TypeScript
+```ts
+export const observe = (observableProxy: Observable, callback: ObservableCallback): boolean => on(observableProxy, ObservableEvents.change, callback);
+export const unobserve = (observableProxy: Observable, callback: ObservableCallback): boolean => off(observableProxy, ObservableEvents.change, callback);
+```
+
+### JavaScript
+```js
+export const observe = (observableProxy, callback) => on(observableProxy, ObservableEvents.change, callback);
+export const unobserve = (observableProxy, callback) => off(observableProxy, ObservableEvents.change, callback);
+```
+
 ## Notes
 
 When a value is modified on an observable proxy, its updated values is available immediately. When multiple values are modified on the observable proxy each registered callback will be called only once using requestAnimationFrame in the browser, or after 16ms in a Node environment. For example:
