@@ -109,14 +109,14 @@ If you wish to recreate the deprecated `observe` and `unobserve` methods, you ca
 
 ### TypeScript
 ```typescript
-export const observe = (observableProxy: Observable, callback: ObservableCallback): boolean => on(observableProxy, ObservableEvents.change, callback);
-export const unobserve = (observableProxy: Observable, callback: ObservableCallback): boolean => off(observableProxy, ObservableEvents.change, callback);
+const observe = (observableProxy: Observable, callback: ObservableCallback): boolean => on(observableProxy, ObservableEvents.change, callback);
+const unobserve = (observableProxy: Observable, callback: ObservableCallback): boolean => off(observableProxy, ObservableEvents.change, callback);
 ```
 
 ### JavaScript
 ```js
-export const observe = (observableProxy, callback) => on(observableProxy, ObservableEvents.change, callback);
-export const unobserve = (observableProxy, callback) => off(observableProxy, ObservableEvents.change, callback);
+const observe = (observableProxy, callback) => on(observableProxy, ObservableEvents.change, callback);
+const unobserve = (observableProxy, callback) => off(observableProxy, ObservableEvents.change, callback);
 ```
 
 ## Notes
