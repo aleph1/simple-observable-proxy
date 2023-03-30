@@ -8,7 +8,7 @@ Simple Observable Proxy is written in TypeScript and compiles as CommonJS and ES
 - [Installation](#real-cool-heading)
 - [Basic Usage](#basic-usage)
 - [Methods](#methods)
-- [Migration from 1.x to 2.x](#migrating-from-1x-to-2x)
+- [Migrating from 1.x to 2.x](#migrating-from-1x-to-2x)
 - [Notes](#notes)
 - [Roadmap](#roadmap)
 - [Browser Support](#browser-support)
@@ -99,7 +99,7 @@ Shorthand method that calls unobserve(proxy, "change", callbackFn). Maintained f
 ### destroy(proxy: Observable): boolean
 Cleans up the proxy. Returns `true` if successfully destroyed, or `false` in cases where the proxy has already been destroyed, or is not a valid proxy.
 
-## Migration from 1.x to 2.x
+## Migrating from 1.x to 2.x
 In order to ensure that 1.x code does not break, the `observe` and `unobserve` methods have been retained as part of the 2.x codeset, but are marked as deprecated. If you wish to convert these to the 2.x syntax, you shoud modify your code as follows:
 
 1. Where you import the `observe` and `unobserve` methods, instead import the `on` and `off` methods, and the `ObservableEvents` object.
