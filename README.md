@@ -108,7 +108,7 @@ In order to ensure that 1.x code does not break, the `observe` and `unobserve` m
 If you wish to recreate the deprecated `observe` and `unobserve` methods, you can add the following to your codeset.
 
 ### TypeScript
-```ts
+```typescript
 export const observe = (observableProxy: Observable, callback: ObservableCallback): boolean => on(observableProxy, ObservableEvents.change, callback);
 export const unobserve = (observableProxy: Observable, callback: ObservableCallback): boolean => off(observableProxy, ObservableEvents.change, callback);
 ```
