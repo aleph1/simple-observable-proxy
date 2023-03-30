@@ -5,6 +5,14 @@ For objects, changing values, as well as adding, editing, or deleting keys resul
 
 Simple Observable Proxy is written in TypeScript and compiles as CommonJS and ESM. It is intended to be a very small library (less than 800 bytes when minified and gzipped), and, as such, it does not report on specific differences between the current and prior state of the observed object or array.
 
+- [Installation](#real-cool-heading)
+- [Basic Usage](#basic-usage)
+- [Methods](#methods)
+- [Migration from 1.x to 2.x](#migrating-from-1x-to-2x)
+- [Notes](#notes)
+- [Roadmap](#roadmap)
+- [Browser Support](#browser-support)
+
 ## Installation
 
 Node
