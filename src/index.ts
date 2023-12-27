@@ -35,7 +35,13 @@ const tick = (): void => {
   changedProxies.clear();
   destroyedProxies.forEach(proxy => {
     const observers = observersByProxy.get(proxy);
-    if(observers) observers.destroy.forEach((callback: ObservableCallback) => callback(proxy));
+    if(observers) {
+      observers.destroy.forEach((callback: ObservableCallback) => callback(proxy));
+      observers.change.clear();
+      observers.destroy.clear();
+      observablesByProxy.delete(proxy);
+      observersByProxy.delete(proxy);
+    }
   });
   destroyedProxies.clear();
   if(BROWSER) window.requestAnimationFrame(tick);
@@ -110,12 +116,8 @@ export const unobserve = (observableProxy: Observable, callback: ObservableCallb
 export const destroy = (observableProxy: Observable): boolean => {
   const observers = observersByProxy.get(observableProxy);
   if(observers) {
-    observers.change.clear();
-    observers.destroy.clear();
+    destroyedProxies.add(observableProxy);
     observables.delete(observablesByProxy.get(observableProxy));
-    observablesByProxy.delete(observableProxy);
-    observersByProxy.delete(observableProxy);
-    changedProxies.delete(observableProxy);
     return true;
   }
   return false;
