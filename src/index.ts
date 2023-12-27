@@ -70,9 +70,11 @@ const makeObservableProxy = (data: Observable, rootProxy?: Observable): Observab
       if (key in target) {
         delete target[key as string];
         changedProxies.add(rootProxy || proxy);
-        return true;
       }
-      return false;
+      // we return true whether the property existed or not, as node
+      // throws an error when false is returned which requires wrapping
+      // all delete statements in a try/catch block
+      return true;
     }
   });
   observables.add(data);
