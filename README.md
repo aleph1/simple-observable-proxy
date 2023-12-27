@@ -150,7 +150,7 @@ console.log('before state changed callback');
 
 Version 3.0 will consider the following change:
 
-- Add support for Map and Set
+- Support for Map and Set
 - Instances of classes are observable
 
 ## Browser Support
