@@ -83,7 +83,6 @@ describe('observable()', () => {
 
   test('Throws error when object is already observable', () => {
     const state = observable({});
-    console.log(state);
     expect(() => {
       const state2 = observable(state);
     }).toThrow(Error);
