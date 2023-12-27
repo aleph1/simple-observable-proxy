@@ -14,15 +14,19 @@ const ObservableEvents = { change: "change", destroy: "destroy" },
       changedProxies.clear(),
       destroyedProxies.forEach((proxy) => {
         const observers = observersByProxy.get(proxy);
-        observers && observers.destroy.forEach((callback) => callback(proxy));
+        observers &&
+          (observers.destroy.forEach((callback) => callback(proxy)),
+          observers.change.clear(),
+          observers.destroy.clear(),
+          observablesByProxy.delete(proxy),
+          observersByProxy.delete(proxy));
       }),
       destroyedProxies.clear(),
       window.requestAnimationFrame(tick);
   },
   makeObservableProxy = (data, rootProxy) => {
-    if (observables.has(data)) throw new Error("data is alreaby an observable");
-    if (rootProxy && !observablesByProxy.has(rootProxy))
-      throw new Error("rootProxy isn’t an observable");
+    if (observables.has(data) || observablesByProxy.has(data))
+      throw new Error("data is alreaby an observable");
     let observers;
     const proxy = new Proxy(data, {
       get: (target, key) => target[key],
@@ -37,9 +41,11 @@ const ObservableEvents = { change: "change", destroy: "destroy" },
         }
         return !0;
       },
-      deleteProperty: (target, key) =>
+      deleteProperty: (target, key) => (
         key in target &&
-        (delete target[key], changedProxies.add(rootProxy || proxy), !0),
+          (delete target[key], changedProxies.add(rootProxy || proxy)),
+        !0
+      ),
     });
     return (
       observables.add(data),
@@ -100,18 +106,10 @@ const ObservableEvents = { change: "change", destroy: "destroy" },
     on(observableProxy, ObservableEvents.change, callback),
   unobserve = (observableProxy, callback) =>
     off(observableProxy, ObservableEvents.change, callback),
-  destroy = (observableProxy) => {
-    const observers = observersByProxy.get(observableProxy);
-    return (
-      !!observers &&
-      (observers.change.clear(),
-      observers.destroy.clear(),
-      observables.delete(observablesByProxy.get(observableProxy)),
-      observablesByProxy.delete(observableProxy),
-      observersByProxy.delete(observableProxy),
-      changedProxies.delete(observableProxy),
-      !0)
-    );
-  };
+  destroy = (observableProxy) =>
+    !!observersByProxy.get(observableProxy) &&
+    (destroyedProxies.add(observableProxy),
+    observables.delete(observablesByProxy.get(observableProxy)),
+    !0);
 tick();
 export { ObservableEvents, destroy, observable, observe, off, on, unobserve };
