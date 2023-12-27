@@ -62,6 +62,18 @@ describe('observable()', () => {
     }).toThrow(Error);
   });
 
+  test('Throws error when passed Map', () => {
+    expect(() => {
+      const state = observable(new Map());
+    }).toThrow(Error);
+  });
+
+  test('Throws error when passed Set', () => {
+    expect(() => {
+      const state = observable(new Set());
+    }).toThrow(Error);
+  });
+
   test('Throws error when passed undefined', () => {
     expect(() => {
       const state = observable(undefined as any);
