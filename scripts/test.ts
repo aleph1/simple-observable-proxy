@@ -527,3 +527,30 @@ describe('destroy()', () => {
   });
 
 });
+
+describe('miscellaneous', () => {
+
+  test('Deleting an existing property returns true', () => {
+    const state = observable({
+      test: 'test'
+    });
+    expect(delete state.test).toEqual(true);
+  });
+
+  // we return true even if a property is non-existent to avoid
+  // an error being thrown in Node
+  test('Deleting a non-existent property returns true', () => {
+    const state = observable({});
+    expect(delete state.test).toEqual(true);
+  });
+
+  test('Deleted property no longer exists on observable proxy', () => {
+    const state = observable({
+      test: 'test'
+    });
+    expect('test' in state).toEqual(true);
+    delete state.test;
+    expect('test' in state).toEqual(false);
+  });
+
+});
