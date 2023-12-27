@@ -1,4 +1,4 @@
-import { observable, on, off, observe, unobserve, destroy, Observable, ObservableEvents } from '../src/index';
+import { observable, on, off, observe, unobserve, destroy, Observable, ObservableEvents } from './index';
 
 function createState(): Observable {
   return {
