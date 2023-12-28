@@ -22,7 +22,7 @@ npm install simple-observable-proxy
 
 Browser
 ```
-import { observable, observe } from 'simple-observable-proxy';
+import { observable } from 'simple-observable-proxy';
 ```
 
 ## Basic Usage
@@ -30,18 +30,18 @@ import { observable, observe } from 'simple-observable-proxy';
 Objects and arrays can also be observed and unobserved.
 
 ```js
-import { observable, observe, unobserve } from 'simple-observable-proxy';
+import { observable, ObservableEvents, on, off } from 'simple-observable-proxy';
 const stateChange = state => {
   console.log('stateChange()');
 }
 const state = observable({
   test: 'test'
 });
-observe(state, stateChange);
+on(state, ObservableEvents.change, stateChange);
 state.test = 'test2'; // stateChange() will be called on RAF
 window.requestAnimationFrame(() => {
   console.log('state.test : ' + state.test);
-  unobserve(state, stateChange);
+  off(state, ObservableEvents.change, stateChange);
   state.test = 'test3'; // stateChange() will not be called
   console.log('state.test : ' + state.test);
 });
@@ -50,7 +50,7 @@ window.requestAnimationFrame(() => {
 It is possible to have multiple callbacks on the same observable. This can be useful in specific cases such as multiple components sharing state.
 
 ```js
-import { observable, observe } from 'simple-observable-proxy';
+import { observable, ObservableEvents, on } from 'simple-observable-proxy';
 // create 
 const sharedState = observable([
   {
@@ -71,8 +71,8 @@ const sharedStateCallback2 = state => {
   console.log('sharedStateCallback2()');
 };
 
-observe(sharedState, sharedStateCallback1);
-observe(sharedState, sharedStateCallback2);
+on(sharedState, ObservableEvents.change, sharedStateCallback1);
+on(sharedState, ObservableEvents.change, sharedStateCallback2);
 ```
 
 ## Methods
@@ -124,7 +124,7 @@ const unobserve = (observableProxy, callback) => off(observableProxy, Observable
 When a value is modified on an observable proxy, its updated values is available immediately. When multiple values are modified on the observable proxy each registered callback will be called only once using requestAnimationFrame in the browser, or after 16ms in a Node environment. For example:
 
 ```js
-import { observable, observe } from 'simple-observable-proxy';
+import { observable, ObservableEvents, on } from 'simple-observable-proxy';
 const stateChange = () => {
   console.log('state changed callback')
 };
@@ -132,7 +132,7 @@ const state = observable({
   test: 'test',
   test2: 'test2'
 });
-observe(state, stateChange);
+on(state, ObservableEvents.change, stateChange);
 state.test = 'test2'; // modify key
 state.nested = [1, 2, 3]; // added key
 delete state.test2; // delete key
