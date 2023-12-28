@@ -91,10 +91,10 @@ Subscribes to either the change or destroy event using callbackFn, Returns `true
 Unsubscribes from either the change or destroy event using callbackFn. Returns `true` if successfully unsubscribed, or `false` in cases where the proxy or callback function is invalid.
 
 ### DEPRECATED observe(proxy: Observable, callbackFn: (proxy: Observable) => void): boolean
-Shorthand method that calls observe(proxy, "change", callbackFn). Maintained for backwards compatibility with v1, but will be dropped in a future release.
+Shorthand method that calls `observe(proxy, "change", callbackFn)`. Maintained for backwards compatibility with v1, but will be dropped in a future release.
 
 ### DEPRECATED unobserve(proxy: Observable, callbackFn: (proxy: Observable) => void): boolean
-Shorthand method that calls unobserve(proxy, "change", callbackFn). Maintained for backwards compatibility with v1, but will be dropped in a future release.
+Shorthand method that calls `unobserve(proxy, "change", callbackFn)`. Maintained for backwards compatibility with v1, but will be dropped in a future release.
 
 ### destroy(proxy: Observable): boolean
 Cleans up the proxy. Returns `true` if successfully destroyed, or `false` in cases where the proxy has already been destroyed, or is not a valid proxy.
