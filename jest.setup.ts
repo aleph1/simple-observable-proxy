@@ -1,8 +1,5 @@
-declare global {
-  var FRAME_TIME: number;
-}
-
-export const FRAME_TIME: number = global.FRAME_TIME = 16;
+global.BROWSER = false;
+global.FRAME_TIME = 16;
 
 Object.defineProperty(window, 'navigator', {value: 'node'});
 Object.defineProperty(window, 'userAgent', {value: 'node'});

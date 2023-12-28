@@ -9,7 +9,7 @@
 <body>
 	Check the console :)
 	<script type="module">
-		import { observable, observe, destroy } from '../dist/simple-observable-proxy.js';
+		import { observable, ObservableEvents, on, destroy } from '../dist/simple-observable-proxy.js';
 		const states = [];
 		const statesSize = 1000;
 		let observables = [];
@@ -30,7 +30,7 @@
 		const t0 = performance.now();
 		for( let i = 0; i < statesSize; i++ ) {
 			const observableObj = observable(states[i]);
-			observe(observableObj, () => {});
+			on(observableObj, ObservableEvents.change, () => {});
 			observables.push(observableObj);
 		}
 		const t1 = performance.now();

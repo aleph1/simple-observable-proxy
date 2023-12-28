@@ -9,20 +9,20 @@
 <body>
 	Check the console :)
 	<script type="module">
-		import { observable, observe, unobserve } from '../dist/simple-observable-proxy.js';
-		const stateChange = () => {
-			console.log('stateChange()');
+		import { observable, ObservableEvents, on, off } from '../dist/simple-observable-proxy.js';
+		const stateChange = state => {
+		  console.log('stateChange()');
 		}
 		const state = observable({
-			test: 'test'
+		  test: 'test'
 		});
-		observe(state, stateChange);
+		on(state, ObservableEvents.change, stateChange);
 		state.test = 'test2'; // stateChange() will be called on RAF
 		window.requestAnimationFrame(() => {
-			console.log('state.test : ' + state.test);
-			unobserve(state, stateChange);
-			state.test = 'test3'; // stateChange() will not be called
-			console.log('state.test : ' + state.test);
+		  console.log('state.test : ' + state.test);
+		  off(state, ObservableEvents.change, stateChange);
+		  state.test = 'test3'; // stateChange() will not be called
+		  console.log('state.test : ' + state.test);
 		});
 	</script>
 </body>

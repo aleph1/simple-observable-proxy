@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Simple Observable Proxy Demo</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	Check the console :)
+	<script type="module">
+		import { observable, ObservableEvents, on } from '../dist/simple-observable-proxy.js';
+		// create 
+		const sharedState = observable([
+		  {
+		    id: 1,
+		    name: 'My first book.'
+		  },
+		  {
+		    id: 2,
+		    name: 'My second book.'
+		  }
+		]);
+
+		const sharedStateCallback1 = state => {
+		  console.log('sharedStateCallback1()');
+		};
+
+		const sharedStateCallback2 = state => {
+		  console.log('sharedStateCallback2()');
+		};
+
+		on(sharedState, ObservableEvents.change, sharedStateCallback1);
+		on(sharedState, ObservableEvents.change, sharedStateCallback2);
+
+		sharedState.push({
+			id: 3,
+			name: 'My third book.'
+		});
+
+		// log: sharedStateCallback1();
+		// log: sharedStateCallback2();
+	</script>
+</body>
+</html>

@@ -1,23 +1,32 @@
-/*! simple observable proxy v1.1.0 | MIT License | © 2022 Aleph1 Technologies Inc */
-const observables = new Set(),
+/*! simple observable proxy v2.0.0 | MIT License | © 2022 Aleph1 Technologies Inc */
+const ObservableEvents = { change: "change", destroy: "destroy" },
+  observables = new Set(),
   observablesByProxy = new Map(),
   observersByProxy = new Map(),
-  proxiesToNotify = new Set(),
-  objectConstructor = {}.constructor,
+  changedProxies = new Set(),
+  destroyedProxies = new Set(),
+  plainObjectConstructor = {}.constructor,
   tick = () => {
-    proxiesToNotify.forEach((proxy) => {
-      observersByProxy.get(proxy).forEach((callback) => callback());
+    changedProxies.forEach((proxy) => {
+      const observers = observersByProxy.get(proxy);
+      observers && observers.change.forEach((callback) => callback(proxy));
     }),
-      proxiesToNotify.clear(),
-      "undefined" != typeof window && window.requestAnimationFrame
-        ? window.requestAnimationFrame(tick)
-        : setTimeout(tick, 16);
+      changedProxies.clear(),
+      destroyedProxies.forEach((proxy) => {
+        const observers = observersByProxy.get(proxy);
+        observers &&
+          (observers.destroy.forEach((callback) => callback(proxy)),
+          observers.change.clear(),
+          observers.destroy.clear(),
+          observablesByProxy.delete(proxy),
+          observersByProxy.delete(proxy));
+      }),
+      destroyedProxies.clear(),
+      window.requestAnimationFrame(tick);
   },
   makeObservableProxy = (data, rootProxy) => {
-    if (observables.has(data))
-      throw new Error("Can’t observe Object or Array again");
-    if (observablesByProxy.has(data))
-      throw new Error("rootProxy isn’t an observable");
+    if (observables.has(data) || observablesByProxy.has(data))
+      throw new Error("data is alreaby an observable");
     let observers;
     const proxy = new Proxy(data, {
       get: (target, key) => target[key],
@@ -26,17 +35,21 @@ const observables = new Set(),
           if (observers) {
             if (observablesByProxy.has(value))
               throw new Error("Can’t nest observables");
-            proxiesToNotify.add(rootProxy || proxy);
+            changedProxies.add(rootProxy || proxy);
           }
           target[key] = value;
         }
         return !0;
       },
-      deleteProperty: (target, key) =>
+      deleteProperty: (target, key) => (
         key in target &&
-        (delete target[key], proxiesToNotify.add(rootProxy || proxy), !0),
+          (delete target[key], changedProxies.add(rootProxy || proxy)),
+        !0
+      ),
     });
     return (
+      observables.add(data),
+      observablesByProxy.set(proxy, data),
       (Array.isArray(data)
         ? [...Array(data.length).keys()]
         : Object.keys(data)
@@ -49,48 +62,54 @@ const observables = new Set(),
           ((data) =>
             !!data &&
             "object" == typeof data &&
-            data.constructor === objectConstructor)(data))(value) &&
+            data.constructor === plainObjectConstructor)(data))(value) &&
           (proxy[key] = makeObservableProxy(value, rootProxy || proxy));
       }),
-      (observers = new Set()),
-      observables.add(data),
-      observablesByProxy.set(proxy, data),
-      observersByProxy.set(proxy, observers),
+      observersByProxy.set(
+        proxy,
+        (observers = { change: new Set(), destroy: new Set() })
+      ),
       proxy
     );
   },
-  observable = (data) =>
-    ((data) =>
-      Array.isArray(data) ||
+  observable = (data) => {
+    if (
       ((data) =>
-        !!data &&
-        "object" == typeof data &&
-        data.constructor === objectConstructor)(data))(data) &&
-    makeObservableProxy(data),
-  observe = (observableProxy, callback) => {
+        Array.isArray(data) ||
+        ((data) =>
+          !!data &&
+          "object" == typeof data &&
+          data.constructor === plainObjectConstructor)(data))(data)
+    )
+      return makeObservableProxy(data);
+    throw new Error("Only Arrays and plain Objects are observable");
+  },
+  on = (observableProxy, eventType, callback) => {
     const observers = observersByProxy.get(observableProxy);
     return (
-      !(!observers || "function" != typeof callback) && observers.add(callback)
+      !(
+        !observers ||
+        !observers[eventType] ||
+        "function" != typeof callback ||
+        observers[eventType].has(callback)
+      ) && (observers[eventType].add(callback), !0)
     );
   },
-  unobserve = (observableProxy, callback) => {
+  off = (observableProxy, eventType, callback) => {
     const observers = observersByProxy.get(observableProxy);
     return (
-      !(!observers || "function" != typeof callback) &&
-      observers.delete(callback)
+      !(!observers || !observers[eventType] || "function" != typeof callback) &&
+      observers[eventType].delete(callback)
     );
   },
-  destroy = (observableProxy) => {
-    const observers = observersByProxy.get(observableProxy);
-    return (
-      !!observers &&
-      (observers.clear(),
-      observables.delete(observablesByProxy.get(observableProxy)),
-      observablesByProxy.delete(observableProxy),
-      observersByProxy.delete(observableProxy),
-      proxiesToNotify.delete(observableProxy),
-      !0)
-    );
-  };
+  observe = (observableProxy, callback) =>
+    on(observableProxy, ObservableEvents.change, callback),
+  unobserve = (observableProxy, callback) =>
+    off(observableProxy, ObservableEvents.change, callback),
+  destroy = (observableProxy) =>
+    !!observersByProxy.get(observableProxy) &&
+    (destroyedProxies.add(observableProxy),
+    observables.delete(observablesByProxy.get(observableProxy)),
+    !0);
 tick();
-export { destroy, observable, observe, unobserve };
+export { ObservableEvents, destroy, observable, observe, off, on, unobserve };

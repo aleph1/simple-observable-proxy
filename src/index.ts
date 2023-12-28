@@ -1,89 +1,125 @@
-export type PlainObject = { [name: string]: any }
-type ObservableCallback = () => void;
+export type Observable = {[name: string]: any;};
+export type ObservableCallback = (proxy: Observable) => void;
+export const ObservableEvents = {
+    change: 'change',
+    destroy: 'destroy',
+} as const;
+type ObservableEventKey = keyof typeof ObservableEvents;
+export type ObservableEvent = typeof ObservableEvents[ObservableEventKey];
+
+type ObservableCallbackObject = {
+  change: Set<ObservableCallback>,
+  destroy: Set<ObservableCallback>
+};
+export type ObservableCallbackMap = Map<Observable, ObservableCallbackObject>;
 
 // data that is being observed
 const observables = new Set();
 // original data for each proxy
 const observablesByProxy = new Map();
 // observers for each proxy
-const observersByProxy = new Map();
-// observers to call on tick
-const proxiesToNotify = new Set();
+const observersByProxy: ObservableCallbackMap = new Map();
+// collections to call on tick
+const changedProxies: Set<Observable> = new Set();
+const destroyedProxies: Set<Observable> = new Set();
 
-const objectConstructor = {}.constructor;
-const isPlainObject = (data: any): data is PlainObject => !!data && typeof data === 'object' && data.constructor === objectConstructor;
-const canBeObservable = (data: any): boolean => Array.isArray(data) || /*#__INLINE__*/isPlainObject(data);
+const plainObjectConstructor = {}.constructor;
+const isPlainObject = (data: Observable): boolean => !!data && typeof data === 'object' && data.constructor === plainObjectConstructor;
+const canBeObservable = (data: Observable): boolean => Array.isArray(data) || /*#__INLINE__*/isPlainObject(data);
 
-const tick = ():void => {
-  proxiesToNotify.forEach(proxy => {
-    observersByProxy.get(proxy).forEach((callback: ObservableCallback) => callback());
+const tick = (): void => {
+  changedProxies.forEach(proxy => {
+    const observers = observersByProxy.get(proxy);
+    if(observers) observers.change.forEach((callback: ObservableCallback) => callback(proxy));
   });
-  proxiesToNotify.clear();
-  if(typeof window !== "undefined" && window.requestAnimationFrame) window.requestAnimationFrame(tick);
+  changedProxies.clear();
+  destroyedProxies.forEach(proxy => {
+    const observers = observersByProxy.get(proxy);
+    if(observers) {
+      observers.destroy.forEach((callback: ObservableCallback) => callback(proxy));
+      observers.change.clear();
+      observers.destroy.clear();
+      observablesByProxy.delete(proxy);
+      observersByProxy.delete(proxy);
+    }
+  });
+  destroyedProxies.clear();
+  if(BROWSER) window.requestAnimationFrame(tick);
   else setTimeout(tick, 16);
 };
 
-const makeObservableProxy = (data: any, rootProxy?: any): PlainObject => {
-  if(observables.has(data)) throw new Error('Can’t observe Object or Array again');
-  if(observablesByProxy.has(data)) throw new Error('rootProxy isn’t an observable');
-  let observers: Set<ObservableCallback>;
+const makeObservableProxy = (data: Observable, rootProxy?: Observable): Observable => {
+  if(observables.has(data) || observablesByProxy.has(data)) throw new Error('data is alreaby an observable');
+  //if(rootProxy && !observablesByProxy.has(rootProxy)) throw new Error('rootProxy isn’t an observable');
+  let observers: ObservableCallbackObject;
   const proxy = new Proxy(data, {
     get(target, key): any {
-      return target[key];
+      return target[key as string];
     },
     set(target, key, value): boolean {
-      if(target[key] !== value) {
+      if(target[key as string] !== value) {
         if(observers) {
           if(observablesByProxy.has(value)) throw new Error('Can’t nest observables');
-          proxiesToNotify.add(rootProxy || proxy)
+          changedProxies.add(rootProxy || proxy)
         }
-        target[key] = value;
+        target[key as string] = value;
       }
       return true;
     },
     deleteProperty(target, key): boolean {
       if (key in target) {
-        delete target[key];
-        proxiesToNotify.add(rootProxy || proxy);
-        return true;
+        delete target[key as string];
+        changedProxies.add(rootProxy || proxy);
       }
-      return false;
+      // we return true whether the property existed or not, as node
+      // throws an error when false is returned which requires wrapping
+      // all delete statements in a try/catch block
+      return true;
     }
   });
+  observables.add(data);
+  observablesByProxy.set(proxy, data);
   (Array.isArray(data) ? [...Array(data.length).keys()] : Object.keys(data)).forEach(key => {
-    const value = data[key];
+    const value = data[key as string];
     if(observablesByProxy.has(value)) throw new Error('Can’t nest observables');
     if(/*#__INLINE__*/canBeObservable(value)) proxy[key] = makeObservableProxy(value, rootProxy || proxy);
   });
-  observers = new Set();
-  observables.add(data);
-  observablesByProxy.set(proxy, data);
-  observersByProxy.set(proxy, observers);
-  return proxy as PlainObject;
+  observersByProxy.set(proxy, observers = {
+    change: new Set(),
+    destroy: new Set()
+  });
+  return proxy;
 };
 
-export const observable = (data: any): PlainObject | boolean => {
-  return /*#__INLINE__*/canBeObservable(data) && makeObservableProxy(data);
+export const observable = (data: Observable): Observable => {
+  if(/*#__INLINE__*/canBeObservable(data)) return makeObservableProxy(data);
+  else throw new Error('Only Arrays and plain Objects are observable');
 }
 
-export const observe = (observableProxy: any, callback: ObservableCallback): boolean => {
+export const on = (observableProxy: Observable, eventType: ObservableEventKey, callback: ObservableCallback ): boolean => {
   const observers = observersByProxy.get(observableProxy);
-  return observers && typeof callback === 'function' ? observers.add(callback) : false;
+  if(observers && observers[eventType] && typeof callback === 'function' && !observers[eventType].has(callback)) {
+    observers[eventType].add(callback);
+    return true;
+  }
+  return false;
 }
 
-export const unobserve = (observableProxy: any | PlainObject, callback: ObservableCallback): boolean => {
+export const off = (observableProxy: Observable, eventType: ObservableEventKey, callback: ObservableCallback ): boolean => {
   const observers = observersByProxy.get(observableProxy);
-  return observers && typeof callback === 'function' ? observers.delete(callback) : false;
+  if(observers && observers[eventType] && typeof callback === 'function') return observers[eventType].delete(callback);
+  return false;
 }
 
-export const destroy = (observableProxy: any): boolean => {
+// deprecated and to be removed in 3.0
+export const observe = (observableProxy: Observable, callback: ObservableCallback): boolean => on(observableProxy, ObservableEvents.change, callback);
+export const unobserve = (observableProxy: Observable, callback: ObservableCallback): boolean => off(observableProxy, ObservableEvents.change, callback);
+
+export const destroy = (observableProxy: Observable): boolean => {
   const observers = observersByProxy.get(observableProxy);
   if(observers) {
-    observers.clear();
+    destroyedProxies.add(observableProxy);
     observables.delete(observablesByProxy.get(observableProxy));
-    observablesByProxy.delete(observableProxy);
-    observersByProxy.delete(observableProxy);
-    proxiesToNotify.delete(observableProxy);
     return true;
   }
   return false;
