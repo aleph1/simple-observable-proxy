@@ -20,6 +20,7 @@ type ObservableCallbackObject = {
     destroy: Set<ObservableCallback>;
 };
 export type ObservableCallbackMap = Map<Observable, ObservableCallbackObject>;
+export declare const isPlainObject: (data: Observable) => boolean;
 export declare const observable: (data: Observable) => Observable;
 export declare const isObservable: (observableProxy: Observable) => boolean;
 export declare const observableObject: (data: ObservableObject) => ObservableObject;
