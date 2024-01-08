@@ -67,6 +67,21 @@ on(state, observableEvents.change, stateChange);
 state.set(0, 'test'); // in browser stateChange() will be called on requestAnimationFrame, and in Node approximately 16ms after being set
 ```
 
+There is also a function that will automatically detect the data type and return an observable. This is used internally by the library for deep data structures.
+
+```js
+import { observable, isPlainObject } from 'simple-observable-proxy';
+
+const objState = observable({});
+console.log(isPlainObject(arrState)); // true
+
+const arrState = observable([]);
+console.log(Array.isArray(arrState)); // true
+
+const mapState = observable(new Map);
+console.log(mapState instanceof Map); // true
+```
+
 It is possible to have multiple callbacks on the same observable. This can be useful in specific cases such as multiple components sharing state.
 
 ```js
