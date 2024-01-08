@@ -1,7 +1,6 @@
 export type ObservableArray = {[name: string]: any;};
 export type ObservableObject = {[name: string]: any;};
 export type ObservableMap = {[name: string]: any;};
-//export type ObservableSet = {[name: string]: any;};
 export type Observable = ObservableArray | ObservableObject| ObservableMap;// | ObservableSet;
 export type ObservableCallback = (proxy: Observable) => void;
 export const ObservableEvents = {
