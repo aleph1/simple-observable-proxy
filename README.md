@@ -1,9 +1,11 @@
 # Simple Observable Proxy
-### Simple Observable Proxy is a dependency-free library for JavaScript, that allows for observation of arrays and objects that are either flat or deep.
+### Simple Observable Proxy is a dependency-free library for JavaScript, that allows for observation of arrays, objects, and maps.
 
-For objects, changing values, as well as adding, editing, or deleting keys results in a callback signal. For arrays changing values, direct modification using \[\], methods that change the array (pop, push, shift, unshift, etc.), or modifying length results in a callback signal. Multiple observers can be created per observable, and all signals are queued and sent using requestAnimationFrame in the browser, and an interval of 16 milliseconds in a node environment.
+For objects, changing values, as well as adding, editing, or deleting keys results in a callback signal. For arrays direct modification using \[\], methods that change the array (pop, push, shift, unshift, etc.), or modifying length results in a callback signal. For maps, modifying values using set, delete, or clear will result in a callback signal.
 
-Simple Observable Proxy is written in TypeScript and compiles as CommonJS and ESM. It is intended to be a very small library (less than 800 bytes when minified and gzipped), and, as such, it does not report on specific differences between the current and prior state of the observed object or array.
+Multiple observers can be created per observable, and all signals are queued and sent using requestAnimationFrame in the browser, and an interval of 16 milliseconds in a node environment.
+
+Simple Observable Proxy is written in TypeScript and compiles as CommonJS and ESM. It is intended to be a very small library (less than 1000 bytes when minified and gzipped), and, as such, it does not report on specific differences between the current and prior state of the observed object, array, or map.
 
 - [Installation](#real-cool-heading)
 - [Basic Usage](#basic-usage)
@@ -27,30 +29,38 @@ import { observable } from 'simple-observable-proxy';
 
 ## Basic Usage
 
-Objects and arrays can also be observed and unobserved.
+Observing an object.
 
 ```js
-import { observable, ObservableEvents, on, off } from 'simple-observable-proxy';
+import { ObservableObject, ObservableEvents, on, off } from 'simple-observable-proxy';
 const stateChange = state => {
   console.log('stateChange()');
 }
-const state = observable({
+const state = observableObject({
   test: 'test'
 });
-on(state, ObservableEvents.change, stateChange);
-state.test = 'test2'; // stateChange() will be called on RAF
-window.requestAnimationFrame(() => {
-  console.log('state.test : ' + state.test);
-  off(state, ObservableEvents.change, stateChange);
-  state.test = 'test3'; // stateChange() will not be called
-  console.log('state.test : ' + state.test);
-});
+on(state, observableEvents.change, stateChange);
+state.test = 'test2'; // in browser stateChange() will be called on requestAnimationFrame, and in Node approximately 16ms after being set
+```
+
+Observing an array.
+
+```js
+import { observableArray, observableEvents, on, off } from 'simple-observable-proxy';
+const stateChange = state => {
+  console.log('stateChange()');
+}
+const state = observableArray([1, 2, 3]);
+on(state, observableEvents.change, stateChange);
+// any of the following will trigger a stateChange callback
+state.push()
+state.test = 'test2'; // in browser stateChange() will be called on requestAnimationFrame, and in Node approximately 16ms after being set
 ```
 
 It is possible to have multiple callbacks on the same observable. This can be useful in specific cases such as multiple components sharing state.
 
 ```js
-import { observable, ObservableEvents, on } from 'simple-observable-proxy';
+import { observable, observableEvents, on } from 'simple-observable-proxy';
 // create 
 const sharedState = observable([
   {

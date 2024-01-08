@@ -512,7 +512,7 @@ describe('ObservableArray type', () => {
     expect(state).toEqual([undefined, 'test']);
   });
 
-  test('Triggers deferred change callback with Array.length (lengthening)', () => {
+  test('Array.length (lengthening) triggers deferred change callback', () => {
     const state = observableArray([]);
     const callback = jest.fn();
     on(state, ObservableEvents.change, callback);
@@ -523,7 +523,7 @@ describe('ObservableArray type', () => {
     expect(state).toEqual([undefined]);
   });
 
-  test('Triggers deferred change callback with Array.length (shortening)', () => {
+  test('Array.length (shortening) triggers deferred change callback', () => {
     const state = observableArray(['test']);
     const callback = jest.fn();
     on(state, ObservableEvents.change, callback);
@@ -534,7 +534,7 @@ describe('ObservableArray type', () => {
     expect(state).toEqual([]);
   });
 
-  test('Triggers deferred change callback with Array.push', () => {
+  test('Array.push triggers deferred change callback', () => {
     const state = observableArray([]);
     const callback = jest.fn();
     on(state, ObservableEvents.change, callback);
@@ -546,7 +546,7 @@ describe('ObservableArray type', () => {
     expect(state).toEqual(['test']);
   });
 
-  test('Triggers deferred change callback with Array.pop', () => {
+  test('Array.pop triggers deferred change callback', () => {
     const state = observableArray([1, 2]);
     const callback = jest.fn();
     on(state, ObservableEvents.change, callback);
@@ -558,7 +558,7 @@ describe('ObservableArray type', () => {
     expect(state).toEqual([1]);
   });
 
-  test('Triggers deferred change callback with Array.shift', () => {
+  test('Array.shift triggers deferred change callback', () => {
     const state = observableArray([1, 2]);
     const callback = jest.fn();
     on(state, ObservableEvents.change, callback);
@@ -570,7 +570,7 @@ describe('ObservableArray type', () => {
     expect(state).toEqual([2]);
   });
 
-  test('Triggers deferred change callback with Array.unshift', () => {
+  test('Array.unshift triggers deferred change callback', () => {
     const state = observableArray([2]);
     const callback = jest.fn();
     on(state, ObservableEvents.change, callback);
@@ -582,7 +582,7 @@ describe('ObservableArray type', () => {
     expect(state).toEqual([1, 2]);
   });
 
-  test('Triggers deferred change callback with Array.splice', () => {
+  test('Array.splice triggers deferred change callback ', () => {
     const state = observableArray([1, 3]);
     const callback = jest.fn();
     on(state, ObservableEvents.change, callback);
@@ -609,7 +609,7 @@ describe('ObservableArray type', () => {
     expect(state).toEqual([3, 4]);
   });
 
-  test('Triggers deferred change callback when deleting existing key', () => {
+  test('Deleting existing key triggers deferred change callback', () => {
     const state = observableArray([1, 2]);
     const callback = jest.fn();
     on(state, ObservableEvents.change, callback);
@@ -620,7 +620,7 @@ describe('ObservableArray type', () => {
     expect(state).toEqual([undefined, 2]);
   });
 
-  test('No deferred change callback when deleting non-existent key', () => {
+  test('Deleting non-existent key does not trigger deferred change callback', () => {
     const state = observableArray([1]);
     const callback = jest.fn();
     on(state, ObservableEvents.change, callback);
@@ -630,7 +630,7 @@ describe('ObservableArray type', () => {
     expect(callback).not.toBeCalled();
   });
 
-  test('Triggers multiple deferred change callbacks', () => {
+  test('Multiple change callbacks on the same observable are triggered', () => {
     const state = observableArray([]);
     const callback1 = jest.fn();
     const callback2 = jest.fn();
@@ -644,7 +644,7 @@ describe('ObservableArray type', () => {
     expect(callback2).toHaveBeenCalledTimes(1);
   });
 
-  test('Triggers deferred change callback when reobserved', () => {
+  test('Deferred change callbacks triggered when reobserved', () => {
     const state = observableArray([]);
     const callback = jest.fn();
     on(state, ObservableEvents.change, callback);
