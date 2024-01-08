@@ -73,9 +73,6 @@ const makeObservableArrayOrObject = (data: ObservableArray | ObservableObject, r
         delete target[prop as string];
         changedProxies.add(rootProxy || proxy);
       }
-      // we return true whether the property existed or not, as node
-      // throws an error when false is returned which requires wrapping
-      // all delete statements in a try/catch block
       return true;
     }
   });
