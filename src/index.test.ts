@@ -1,4 +1,25 @@
-import { observable, isObservable, observableArray, observableObject, observableMap, on, off, destroy, observableEvents } from './index';
+import { observable, isObservable, isPlainObject, observableArray, observableObject, observableMap, on, off, destroy, observableEvents } from './index';
+
+describe('isPlainObject()', () => {
+
+  test('{} returns true', () => {
+    expect(isPlainObject({})).toEqual(true);
+  });
+
+  test('new Object returns true', () => {
+    expect(isPlainObject(new Object)).toEqual(true);
+  });
+
+  test('class instance returns true', () => {
+    expect(isPlainObject(new Date)).toEqual(false);
+  });
+
+  test('custom class instance returns true', () => {
+    class CustomClass {constructor(){}};
+    expect(isPlainObject(new CustomClass)).toEqual(false);
+  });
+
+});
 
 describe('observable()', () => {
   
