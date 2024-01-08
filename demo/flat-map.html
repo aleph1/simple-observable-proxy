@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Simple Observable Proxy Demo</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	Check the console :)
+	<script type="module">
+		import { isObservable, observableMap, observableEvents, on } from '../dist/simple-observable-proxy.min.js';
+		// create 
+		const mapState = observableMap(new Map);
+		const changeCallback = state => {
+			console.log(state.size === 1); // should be true
+			console.log(state.get(0) === 'test'); // should be true
+		};
+		console.log(isObservable(mapState)); // should be true
+		on(mapState, observableEvents.change, changeCallback);
+		mapState.set(0, 'test');
+	</script>
+</body>
+</html>

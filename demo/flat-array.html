@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Simple Observable Proxy Demo</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	Check the console :)
+	<script type="module">
+		import { isObservable, observableArray, observableEvents, on } from '../dist/simple-observable-proxy.min.js';
+		// create 
+		const arrayState = observableArray([]);
+		const changeCallback = state => {
+			console.log(state.length === 1); // should be true
+			console.log(state[0] === 1); // should be true
+		};
+		console.log(isObservable(arrayState)); // should be true
+		on(arrayState, observableEvents.change, changeCallback);
+		arrayState.push(1);
+	</script>
+</body>
+</html>
