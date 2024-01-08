@@ -112,21 +112,27 @@ on(sharedState, ObservableEvents.change, sharedStateCallback2);
 
 ## Methods
 
-### observable(data: Array<any> | {[name: string]: any;} | Map<any, any>): Observable
+### `observable(data: Array<any> | {[name: string]: any;} | Map<any, any>): Observable`
 Converts an `Array`, plain `Object` (not an instance of a class) or `Map` to an instance of `Proxy` and returns it. There are numerous cases where this function will throw an Error:
 
 - If any value other than an `Array` or plain `Object` is passed.
 - If the `Array` or plain `Object` contains an instance of a class.
 - If the `Array` or plain `Object` contains an `Array` or plain `Object` that has already been passed to `observable()`.
 
-### on(proxy: Observable, ObservableEventType: "change" | "destroy", callbackFn: (proxy: Observable) => void): boolean
+### `on(proxy: Observable, ObservableEventType: "change" | "destroy", callbackFn: (proxy: Observable) => void): boolean`
 Subscribes to either the change or destroy event using callbackFn, Returns `true` if successfully subscribed, or `false` in cases where the proxy or callback function is invalid, or the callback is already registered.
 
-### off(proxy: Observable, ObservableEventType: "change" | "destroy", callbackFn: (proxy: Observable) => void): boolean
+### `off(proxy: Observable, ObservableEventType: "change" | "destroy", callbackFn: (proxy: Observable) => void): boolean`
 Unsubscribes from either the change or destroy event using callbackFn. Returns `true` if successfully unsubscribed, or `false` in cases where the proxy or callback function is invalid.
 
-### destroy(proxy: Observable): boolean
+### `destroy(proxy: Observable): boolean`
 Cleans up the proxy. Returns `true` if successfully destroyed, or `false` in cases where the proxy has already been destroyed, or is not a valid proxy.
+
+### `isObservable(proxy: Observable): boolean`
+Whether the proxy is an observable.
+
+### `isPlainObject(value: {[name: string]: any;}): boolean`
+Returns `true` if value was created using `{}` or `new Object`, and `false` if the value is a class instance or any other value.
 
 ## Callbacks
 
