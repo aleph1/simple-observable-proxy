@@ -8,7 +8,7 @@ export const observableEvents = {
     destroy: 'destroy',
 } as const;
 type ObservableEventKey = keyof typeof observableEvents;
-export type ObservableEvent = typeof observableEvents[observableEventKey];
+export type ObservableEvent = typeof observableEvents[ObservableEventKey];
 
 type ObservableCallbackObject = {
   change: Set<ObservableCallback>,
@@ -160,7 +160,7 @@ export const observableMap = (data: ObservableMap): ObservableMap => {
   else throw new Error('data must be a Map');
 };
 
-export const on = (observableProxy: Observable, eventType: observableEventKey, callback: ObservableCallback ): boolean => {
+export const on = (observableProxy: Observable, eventType: ObservableEventKey, callback: ObservableCallback ): boolean => {
   const observers = observersByProxy.get(observableProxy);
   if(observers && observers[eventType] && typeof callback === 'function' && !observers[eventType].has(callback)) {
     observers[eventType].add(callback);
@@ -169,7 +169,7 @@ export const on = (observableProxy: Observable, eventType: observableEventKey, c
   return false;
 }
 
-export const off = (observableProxy: Observable, eventType: observableEventKey, callback: ObservableCallback ): boolean => {
+export const off = (observableProxy: Observable, eventType: ObservableEventKey, callback: ObservableCallback ): boolean => {
   const observers = observersByProxy.get(observableProxy);
   return (observers && observers[eventType] && typeof callback === 'function') ? observers[eventType].delete(callback) : false;
 }
