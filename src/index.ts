@@ -177,10 +177,6 @@ export const off = (observableProxy: Observable, eventType: ObservableEventKey, 
   return (observers && observers[eventType] && typeof callback === 'function') ? observers[eventType].delete(callback) : false;
 }
 
-// deprecated and to be removed in 3.0
-export const observe = (observableProxy: Observable, callback: ObservableCallback): boolean => on(observableProxy, ObservableEvents.change, callback);
-export const unobserve = (observableProxy: Observable, callback: ObservableCallback): boolean => off(observableProxy, ObservableEvents.change, callback);
-
 export const destroy = (observableProxy: Observable): boolean => {
   const observers = observersByProxy.get(observableProxy);
   if(observers) {
