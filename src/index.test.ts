@@ -599,7 +599,7 @@ describe('ObservableArray type', () => {
     const callback = jest.fn();
     on(state, ObservableEvents.change, callback);
     expect(state).toEqual([1, 2, 3]);
-    state.reverse(1, 2, 3);
+    state.reverse();
     expect(callback).not.toBeCalled();
     jest.advanceTimersByTime(global.FRAME_TIME);
     expect(callback).toHaveBeenCalledTimes(1);
