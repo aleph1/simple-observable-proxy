@@ -62,7 +62,7 @@ import { observableMap, observableEvents, on, off } from 'simple-observable-prox
 const stateChange = state => {
   console.log('stateChange()');
 }
-const state = observableArray(new Map);
+const state = observableMap(new Map);
 on(state, observableEvents.change, stateChange);
 state.set(0, 'test'); // in browser stateChange() will be called on requestAnimationFrame, and in Node approximately 16ms after being set
 ```
@@ -164,7 +164,8 @@ const unobserve = (observableProxy, callback) => off(observableProxy, Observable
 
 Version 4.0 will consider the following changes:
 
-- Instances of classes are observable (requires introduction of proxy configuration, which might be beyond the scope of this library)
+- Primitives (will not use proxies, and will likely complicate the API by requiring configuration options for observables)
+- Instances of classes are observable (might be beyond the scope of this library)
 
 ## Browser Support
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="24px" height="24px" />](http://gotbahn.github.io/browsers-support-badges/)</br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://gotbahn.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://gotbahn.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://gotbahn.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_48x48.png" alt="iOS Safari" width="24px" height="24px" />](http://gotbahn.github.io/browsers-support-badges/)</br>iOS Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />](http://gotbahn.github.io/browsers-support-badges/)</br>Opera |
