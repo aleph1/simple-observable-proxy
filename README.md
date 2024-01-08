@@ -155,8 +155,8 @@ console.log('before state changed callback');
 // 'state changed callback'
 ```
 
-## Migrating from 2.x to 3.0
-The `observe` and `unobserve` methods have been removed as of v3.0. If you wish to retain the 2.x syntax, you should add the following to your code:
+## Migrating from 1.x or 2.x to 3.0
+The `observe` and `unobserve` methods have been removed as of v3.0 and should be updated as follows:
 
 1. Where you import the `observe` and `unobserve` methods, instead import the `on` and `off` methods, and the `ObservableEvents` object.
 2. Replace any calls to `observe(yourState, yourChangeCallback)` with `on(yourState, ObservableEvents.change, yourChangeCallback)`, and any calls to `unobserve(yourState, yourChangeCallback)` with `off(yourState, ObservableEvents.change, yourChangeCallback)`.
