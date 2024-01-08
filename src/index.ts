@@ -27,8 +27,7 @@ const changedProxies: Set<Observable> = new Set();
 const destroyedProxies: Set<Observable> = new Set();
 
 const plainObjectConstructor = {}.constructor;
-const isPlainObject = (data: Observable): boolean => !!data && typeof data === 'object' && data.constructor === plainObjectConstructor;
-//const canBeObservable = (data: Observable): boolean => Array.isArray(data) || /*#__INLINE__*/isPlainObject(data);
+export const isPlainObject = (data: Observable): boolean => !!data && typeof data === 'object' && data.constructor === plainObjectConstructor;
 
 const tick = (): void => {
   changedProxies.forEach(proxy => {
