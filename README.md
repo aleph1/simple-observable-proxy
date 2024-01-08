@@ -52,9 +52,19 @@ const stateChange = state => {
 }
 const state = observableArray([1, 2, 3]);
 on(state, observableEvents.change, stateChange);
-// any of the following will trigger a stateChange callback
-state.push()
-state.test = 'test2'; // in browser stateChange() will be called on requestAnimationFrame, and in Node approximately 16ms after being set
+state.push(4); // in browser stateChange() will be called on requestAnimationFrame, and in Node approximately 16ms after being set
+```
+
+Observing a map.
+
+```js
+import { observableMap, observableEvents, on, off } from 'simple-observable-proxy';
+const stateChange = state => {
+  console.log('stateChange()');
+}
+const state = observableArray(new Map);
+on(state, observableEvents.change, stateChange);
+state.set(0, 'test'); // in browser stateChange() will be called on requestAnimationFrame, and in Node approximately 16ms after being set
 ```
 
 It is possible to have multiple callbacks on the same observable. This can be useful in specific cases such as multiple components sharing state.
@@ -87,8 +97,8 @@ on(sharedState, ObservableEvents.change, sharedStateCallback2);
 
 ## Methods
 
-### observable(arrayOrPlainObject: Observable): Observable
-Converts an `Array` or plain `Object` (not an instance of a class) to an instance of `Proxy` and returns it. There are numerous cases where this function will throw an Error:
+### observable(data: Array<any> | {[name: string]: any;} | Map<any, any>): Observable
+Converts an `Array`, plain `Object` (not an instance of a class) or `Map` to an instance of `Proxy` and returns it. There are numerous cases where this function will throw an Error:
 
 - If any value other than an `Array` or plain `Object` is passed.
 - If the `Array` or plain `Object` contains an instance of a class.
@@ -100,38 +110,12 @@ Subscribes to either the change or destroy event using callbackFn, Returns `true
 ### off(proxy: Observable, ObservableEventType: "change" | "destroy", callbackFn: (proxy: Observable) => void): boolean
 Unsubscribes from either the change or destroy event using callbackFn. Returns `true` if successfully unsubscribed, or `false` in cases where the proxy or callback function is invalid.
 
-### DEPRECATED observe(proxy: Observable, callbackFn: (proxy: Observable) => void): boolean
-Shorthand method that calls observe(proxy, "change", callbackFn). Maintained for backwards compatibility with v1, but will be dropped in a future release.
-
-### DEPRECATED unobserve(proxy: Observable, callbackFn: (proxy: Observable) => void): boolean
-Shorthand method that calls unobserve(proxy, "change", callbackFn). Maintained for backwards compatibility with v1, but will be dropped in a future release.
-
 ### destroy(proxy: Observable): boolean
 Cleans up the proxy. Returns `true` if successfully destroyed, or `false` in cases where the proxy has already been destroyed, or is not a valid proxy.
 
-## Migrating from 1.x to 2.x
-In order to ensure that 1.x code does not break, the `observe` and `unobserve` methods have been retained as part of the 2.x codeset, but are marked as deprecated. If you wish to convert these to the 2.x syntax, you shoud modify your code as follows:
+## Callbacks
 
-1. Where you import the `observe` and `unobserve` methods, instead import the `on` and `off` methods, and the `ObservableEvents` object.
-2. Replace any calls to `observe(yourState, yourChangeCallback)` to `on(yourState, ObservableEvents.change, yourChangeCallback)`, and any calls to `unobserve(yourState, yourChangeCallback)` to `off(yourState, ObservableEvents.change, yourChangeCallback)`.
-
-If you wish to recreate the deprecated `observe` and `unobserve` methods, you can add the following to your codeset.
-
-### TypeScript
-```typescript
-const observe = (observableProxy: Observable, callback: ObservableCallback): boolean => on(observableProxy, ObservableEvents.change, callback);
-const unobserve = (observableProxy: Observable, callback: ObservableCallback): boolean => off(observableProxy, ObservableEvents.change, callback);
-```
-
-### JavaScript
-```js
-const observe = (observableProxy, callback) => on(observableProxy, ObservableEvents.change, callback);
-const unobserve = (observableProxy, callback) => off(observableProxy, ObservableEvents.change, callback);
-```
-
-## Notes
-
-When a value is modified on an observable proxy, its updated values is available immediately. When multiple values are modified on the observable proxy each registered callback will be called only once using requestAnimationFrame in the browser, or after 16ms in a Node environment. For example:
+When a value is modified on an observable, its updated values is available immediately. However, change or delete notifications are triggered on the next requestAnimationFrame in the browser or after 16ms in a Node environment. This is by design, otherwise multiple changes to an observable on the same “frame” would trigger multiple change events.
 
 ```js
 import { observable, ObservableEvents, on } from 'simple-observable-proxy';
@@ -156,12 +140,31 @@ console.log('before state changed callback');
 // 'state changed callback'
 ```
 
+## Migrating from 2.x to 3.0
+The `observe` and `unobserve` methods have been removed as of v3.0. If you wish to retain the 2.x syntax, you should add the following to your code:
+
+1. Where you import the `observe` and `unobserve` methods, instead import the `on` and `off` methods, and the `ObservableEvents` object.
+2. Replace any calls to `observe(yourState, yourChangeCallback)` with `on(yourState, ObservableEvents.change, yourChangeCallback)`, and any calls to `unobserve(yourState, yourChangeCallback)` with `off(yourState, ObservableEvents.change, yourChangeCallback)`.
+
+If you wish to recreate the deprecated `observe` and `unobserve` methods, you can add the following to your codeset.
+
+### TypeScript
+```typescript
+const observe = (observableProxy: Observable, callback: ObservableCallback): boolean => on(observableProxy, ObservableEvents.change, callback);
+const unobserve = (observableProxy: Observable, callback: ObservableCallback): boolean => off(observableProxy, ObservableEvents.change, callback);
+```
+
+### JavaScript
+```js
+const observe = (observableProxy, callback) => on(observableProxy, ObservableEvents.change, callback);
+const unobserve = (observableProxy, callback) => off(observableProxy, ObservableEvents.change, callback);
+```
+
 ## Roadmap
 
-Version 3.0 will consider the following change:
+Version 4.0 will consider the following changes:
 
-- Support for Map and Set
-- Instances of classes are observable
+- Instances of classes are observable (requires introduction of proxy configuration, which might be beyond the scope of this library)
 
 ## Browser Support
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="24px" height="24px" />](http://gotbahn.github.io/browsers-support-badges/)</br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://gotbahn.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://gotbahn.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://gotbahn.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_48x48.png" alt="iOS Safari" width="24px" height="24px" />](http://gotbahn.github.io/browsers-support-badges/)</br>iOS Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />](http://gotbahn.github.io/browsers-support-badges/)</br>Opera |
