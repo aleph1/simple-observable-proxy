@@ -136,6 +136,7 @@ const ObservableEvents = { change: "change", destroy: "destroy" },
     if (data instanceof Map) return makeObservableMap(data);
     throw new Error("data must be plain Object, Array, or Map");
   },
+  isObservable = (observableProxy) => observablesByProxy.has(observableProxy),
   observableObject = (data) => {
     if (isPlainObject(data)) return makeObservableArrayOrObject(data);
     throw new Error("data must be a plain Object");
@@ -175,6 +176,7 @@ tick();
 export {
   ObservableEvents,
   destroy,
+  isObservable,
   observable,
   observableArray,
   observableMap,

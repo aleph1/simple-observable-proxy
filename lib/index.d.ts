@@ -21,6 +21,7 @@ type ObservableCallbackObject = {
 };
 export type ObservableCallbackMap = Map<Observable, ObservableCallbackObject>;
 export declare const observable: (data: Observable) => Observable;
+export declare const isObservable: (observableProxy: Observable) => boolean;
 export declare const observableObject: (data: ObservableObject) => ObservableObject;
 export declare const observableArray: (data: ObservableObject) => ObservableArray;
 export declare const observableMap: (data: ObservableMap) => ObservableMap;
