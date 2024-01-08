@@ -1,4 +1,56 @@
-import { observable, observableArray, observableObject, observableMap, on, off, destroy, Observable, ObservableObject, ObservableEvents } from './index';
+import { observable, isObservable, observableArray, observableObject, observableMap, on, off, destroy, Observable, ObservableObject, ObservableEvents } from './index';
+
+describe('observable()', () => {
+  
+  test('[] returns same type', () => {
+    const state = observable([]);
+    expect(Array.isArray(state)).toEqual(true);
+  });
+
+  test('{} returns same type', () => {
+    const state = observable({});
+    expect(typeof state).toEqual('object');
+    expect(state.constructor).toEqual({}.constructor);
+  });
+
+  test('Map returns same type', () => {
+    const state = observable(new Map());
+    expect(state instanceof Map).toEqual(true);
+  });
+
+  test('Throws error on null', () => {
+    expect(() => {
+      const state = observable(null as any);
+    }).toThrow(Error);
+  });
+
+  test('Throws error on boolean', () => {
+    expect(() => {
+      const state = observable(true as any);
+    }).toThrow(Error);
+  });
+
+  test('Throws error on string', () => {
+    expect(() => {
+      const state = observable('test' as any);
+    }).toThrow(Error);
+  });
+
+  test('Throws error on number', () => {
+    expect(() => {
+      const state = observable(1 as any);
+    }).toThrow(Error);
+  });
+
+  test('Throws error on class instance', () => {
+    class CustomClass {constructor(){}};
+    expect(() => {
+      const state = observable(new CustomClass as any);
+    }).toThrow(Error);
+  });
+
+});
+
 
 describe('observableArray()', () => {
 
@@ -319,173 +371,6 @@ describe('observableMap()', () => {
 
 });
 
-/*
-describe('observableSet()', () => {
-
-  test('from empty Set', () => {
-    const state = observableSet(new Set());
-    expect(state.size).toEqual(0);
-  });
-
-  test('from Set with dense array', () => {
-    const state = observableSet(new Set([1, 2]));
-    expect(state.size).toEqual(2);
-    expect(state.has(1)).toEqual(true);
-    expect(state.has(2)).toEqual(true);
-  });
-
-  test('from Set with sparse array', () => {
-    const state = observableSet(new Set([1, , 3]));
-    expect(state.size).toEqual(3);
-    expect(state.has(1)).toEqual(true);
-    expect(state.has(undefined)).toEqual(true);
-    expect(state.has(3)).toEqual(true);
-  });
-
-  test('from Set with nested observable types', () => {
-    const state = observableSet(new Set([
-      [],
-      {},
-      new Map,
-      new Set,
-    ]));
-    let index = 0;
-    state.forEach((value:any) => {
-      if(index === 0) {
-        expect(value).toEqual([]);
-      } else if(index === 1) {
-        expect(value).toEqual({});
-      } else if(index === 2) {
-        expect(value instanceof Map).toEqual(true);
-        expect(value.size).toEqual(0);
-      } else if(index === 3) {
-        expect(value instanceof Set).toEqual(true);
-        expect(value.size).toEqual(0);
-      }
-      index++;
-    });
-  });
-
-  test('Throws error when passed array', () => {
-    expect(() => {
-      const state = observableSet([] as any);
-    }).toThrow(Error);
-  });
-
-  test('Throws error when passed object', () => {
-    expect(() => {
-      const state = observableSet({} as any);
-    }).toThrow(Error);
-  });
-
-  test('Throws error when passed instance of Map', () => {
-    expect(() => {
-      const state = observableSet(new Map as any);
-    }).toThrow(Error);
-  });
-
-  test('Throws error when passed boolean', () => {
-    expect(() => {
-      const state = observableSet(false as any);
-    }).toThrow(Error);
-  });
-
-  test('Throws error when passed number', () => {
-    expect(() => {
-      const state = observableSet(1 as any);
-    }).toThrow(Error);
-  });
-
-  test('Throws error when passed string', () => {
-    expect(() => {
-      const state = observableSet('test' as any);
-    }).toThrow(Error);
-  });
-
-  test('Throws error when passed null', () => {
-    expect(() => {
-      const state = observableSet(null as any);
-    }).toThrow(Error);
-  });
-
-  test('Throws error when passed undefined', () => {
-    expect(() => {
-      const state = observableSet(undefined as any);
-    }).toThrow(Error);
-  });
-
-  test('Throws error when passed instance of built-in class', () => {
-    expect(() => {
-      const state = observableSet(new Date() as any);
-    }).toThrow(Error);
-  });
-
-  test('Throws error when passed instance of custom class', () => {
-    class CustomClass {constructor(){}};
-    expect(() => {
-      const state = observableSet(new CustomClass() as any);
-    }).toThrow(Error);
-  });
-
-});
-*/
-
-describe('observable()', () => {
-  
-  test('[] returns same type', () => {
-    const state = observable([]);
-    expect(Array.isArray(state)).toEqual(true);
-  });
-
-  test('{} returns same type', () => {
-    const state = observable({});
-    expect(typeof state).toEqual('object');
-    expect(state.constructor).toEqual({}.constructor);
-  });
-
-  test('Map returns same type', () => {
-    const state = observable(new Map());
-    expect(state instanceof Map).toEqual(true);
-  });
-
-  //test('Set returns same type', () => {
-  //  const state = observable(new Set());
-  //  expect(state instanceof Set).toEqual(true);
-  //});
-
-  test('Throws error on null', () => {
-    expect(() => {
-      const state = observable(null as any);
-    }).toThrow(Error);
-  });
-
-  test('Throws error on boolean', () => {
-    expect(() => {
-      const state = observable(true as any);
-    }).toThrow(Error);
-  });
-
-  test('Throws error on string', () => {
-    expect(() => {
-      const state = observable('test' as any);
-    }).toThrow(Error);
-  });
-
-  test('Throws error on number', () => {
-    expect(() => {
-      const state = observable(1 as any);
-    }).toThrow(Error);
-  });
-
-  test('Throws error on class instance', () => {
-    class CustomClass {constructor(){}};
-    expect(() => {
-      const state = observable(new CustomClass as any);
-    }).toThrow(Error);
-  });
-
-});
-
 describe('ObservableArray type', () => {
 
   test('Triggers deferred change callback when adding element using index equal to length', () => {
@@ -659,7 +544,7 @@ describe('ObservableArray type', () => {
     expect(state).toEqual([3, 4]);
   });
 
-  test('Deleting existing key triggers deferred change callback', () => {
+  test('Deleting array index triggers deferred change callback', () => {
     const state = observableArray([1, 2]);
     const callback = jest.fn();
     on(state, ObservableEvents.change, callback);
@@ -670,7 +555,7 @@ describe('ObservableArray type', () => {
     expect(state).toEqual([undefined, 2]);
   });
 
-  test('Deleting non-existent key does not trigger deferred change callback', () => {
+  test('Deleting non-existent array index does not trigger deferred change callback', () => {
     const state = observableArray([1]);
     const callback = jest.fn();
     on(state, ObservableEvents.change, callback);
