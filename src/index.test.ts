@@ -1,4 +1,4 @@
-import { observable, isObservable, observableArray, observableObject, observableMap, on, off, destroy, Observable, ObservableObject, ObservableEvents } from './index';
+import { observable, isObservable, observableArray, observableObject, observableMap, on, off, destroy, observableEvents } from './index';
 
 describe('observable()', () => {
   
@@ -394,7 +394,7 @@ describe('ObservableArray type', () => {
   test('Triggers deferred change callback when adding element using index equal to length', () => {
     const state = observableArray([]);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state).toEqual([]);
     state[0] = 'test';
     expect(callback).not.toBeCalled();
@@ -406,7 +406,7 @@ describe('ObservableArray type', () => {
   test('Triggers deferred change callback when adding element using index greater to length', () => {
     const state = observableArray([]);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state).toEqual([]);
     state[1] = 'test';
     expect(callback).not.toBeCalled();
@@ -418,7 +418,7 @@ describe('ObservableArray type', () => {
   test('Array.length (lengthening) triggers deferred change callback', () => {
     const state = observableArray([]);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     state.length = 1;
     expect(callback).not.toBeCalled();
     jest.advanceTimersByTime(global.FRAME_TIME);
@@ -429,7 +429,7 @@ describe('ObservableArray type', () => {
   test('Array.length (shortening) triggers deferred change callback', () => {
     const state = observableArray(['test']);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     state.length = 0;
     expect(callback).not.toBeCalled();
     jest.advanceTimersByTime(global.FRAME_TIME);
@@ -440,7 +440,7 @@ describe('ObservableArray type', () => {
   test('Array.push triggers deferred change callback', () => {
     const state = observableArray([]);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state).toEqual([]);
     state.push('test');
     expect(callback).not.toBeCalled();
@@ -452,7 +452,7 @@ describe('ObservableArray type', () => {
   test('Array.pop triggers deferred change callback', () => {
     const state = observableArray([1, 2]);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state).toEqual([1, 2]);
     state.pop();
     expect(callback).not.toBeCalled();
@@ -464,7 +464,7 @@ describe('ObservableArray type', () => {
   test('Array.shift triggers deferred change callback', () => {
     const state = observableArray([1, 2]);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state).toEqual([1, 2]);
     state.shift();
     expect(callback).not.toBeCalled();
@@ -476,7 +476,7 @@ describe('ObservableArray type', () => {
   test('Array.unshift triggers deferred change callback', () => {
     const state = observableArray([2]);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state).toEqual([2]);
     state.unshift(1);
     expect(callback).not.toBeCalled();
@@ -488,7 +488,7 @@ describe('ObservableArray type', () => {
   test('Array.splice triggers deferred change callback ', () => {
     const state = observableArray([1, 3]);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state).toEqual([1, 3]);
     state.splice(1, 0, 2);
     expect(callback).not.toBeCalled();
@@ -500,7 +500,7 @@ describe('ObservableArray type', () => {
   test('Array.copyWithin triggers deferred change callback', () => {
     const state = observableArray([1, 2]);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state).toEqual([1, 2]);
     state.copyWithin(0, 1);
     expect(callback).not.toBeCalled();
@@ -512,7 +512,7 @@ describe('ObservableArray type', () => {
   test('Array.fill triggers deferred change callback', () => {
     const state = observableArray([1, 2]);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state).toEqual([1, 2]);
     state.fill(1);
     expect(callback).not.toBeCalled();
@@ -524,7 +524,7 @@ describe('ObservableArray type', () => {
   test('Array.reverse triggers deferred change callback', () => {
     const state = observableArray([1, 2, 3]);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state).toEqual([1, 2, 3]);
     state.reverse();
     expect(callback).not.toBeCalled();
@@ -536,7 +536,7 @@ describe('ObservableArray type', () => {
   test('Array.sort works as expected', () => {
     const state = observableArray([1, 2]);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state).toEqual([1, 2]);
     state.sort((a: any, b: any) => {
       return b-a;
@@ -550,7 +550,7 @@ describe('ObservableArray type', () => {
   test('Object.assign triggers deferred change callback', () => {
     const state = observableArray([1, 2]);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state).toEqual([1, 2]);
     Object.assign(state, {
       0: 3,
@@ -565,7 +565,7 @@ describe('ObservableArray type', () => {
   test('Deleting array index triggers deferred change callback', () => {
     const state = observableArray([1, 2]);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     delete state[0];
     expect(callback).not.toBeCalled();
     jest.advanceTimersByTime(global.FRAME_TIME);
@@ -576,7 +576,7 @@ describe('ObservableArray type', () => {
   test('Deleting non-existent array index does not trigger deferred change callback', () => {
     const state = observableArray([1]);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     delete state[1];
     expect(callback).not.toBeCalled();
     jest.advanceTimersByTime(global.FRAME_TIME);
@@ -587,8 +587,8 @@ describe('ObservableArray type', () => {
     const state = observableArray([]);
     const callback1 = jest.fn();
     const callback2 = jest.fn();
-    on(state, ObservableEvents.change, callback1);
-    on(state, ObservableEvents.change, callback2);
+    on(state, observableEvents.change, callback1);
+    on(state, observableEvents.change, callback2);
     state[0] = 'test';
     expect(callback1).not.toBeCalled();
     expect(callback2).not.toBeCalled();
@@ -600,17 +600,17 @@ describe('ObservableArray type', () => {
   test('Deferred change callbacks triggered when reobserved', () => {
     const state = observableArray([]);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     state[0] = 'test';
     jest.advanceTimersByTime(global.FRAME_TIME);
     expect(callback).toHaveBeenCalledTimes(1);
     expect(state).toEqual(['test']);
-    off(state, ObservableEvents.change, callback);
+    off(state, observableEvents.change, callback);
     state[0] = 'test2';
     jest.advanceTimersByTime(global.FRAME_TIME);
     expect(callback).toHaveBeenCalledTimes(1);
     expect(state).toEqual(['test2']);
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     state[0] = 'test3';
     jest.advanceTimersByTime(global.FRAME_TIME);
     expect(callback).toHaveBeenCalledTimes(2);
@@ -621,15 +621,15 @@ describe('ObservableArray type', () => {
     const state = observableArray([]);
     const callback1 = jest.fn();
     const callback2 = jest.fn();
-    on(state, ObservableEvents.change, callback1);
-    on(state, ObservableEvents.change, callback2);
+    on(state, observableEvents.change, callback1);
+    on(state, observableEvents.change, callback2);
     state[0] = 'test';
     expect(callback1).not.toBeCalled();
     expect(callback2).not.toBeCalled();
     jest.advanceTimersByTime(global.FRAME_TIME);
     expect(callback1).toHaveBeenCalledTimes(1);
     expect(callback2).toHaveBeenCalledTimes(1);
-    off(state, ObservableEvents.change, callback2);
+    off(state, observableEvents.change, callback2);
     state[0] = 'test2';
     jest.advanceTimersByTime(global.FRAME_TIME);
     expect(callback1).toHaveBeenCalledTimes(2);
@@ -639,7 +639,7 @@ describe('ObservableArray type', () => {
   test('Triggers deferred destroy callback', () => {
     const state = observableArray([]);
     const destroyCallback = jest.fn();
-    on(state, ObservableEvents.destroy, destroyCallback);
+    on(state, observableEvents.destroy, destroyCallback);
     expect(destroyCallback).not.toBeCalled();
     destroy(state);
     expect(destroyCallback).not.toBeCalled();
@@ -650,7 +650,7 @@ describe('ObservableArray type', () => {
   test('Triggers deferred destroy callback only once', () => {
     const state = observableArray([]);
     const destroyCallback = jest.fn();
-    on(state, ObservableEvents.destroy, destroyCallback);
+    on(state, observableEvents.destroy, destroyCallback);
     expect(destroyCallback).not.toBeCalled();
     destroy(state);
     expect(destroyCallback).not.toBeCalled();
@@ -666,8 +666,8 @@ describe('ObservableArray type', () => {
     const state = observableArray([]);
     const changeCallback = jest.fn();
     const destroyCallback = jest.fn();
-    on(state, ObservableEvents.change, changeCallback);
-    on(state, ObservableEvents.destroy, destroyCallback);
+    on(state, observableEvents.change, changeCallback);
+    on(state, observableEvents.destroy, destroyCallback);
     state[0] = 'test';
     expect(changeCallback).not.toBeCalled();
     expect(destroyCallback).not.toBeCalled();
@@ -693,7 +693,7 @@ describe('ObservableObject type', () => {
   test('Triggers deferred change callback when adding key', () => {
     const state = observableObject({});
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state).toEqual({});
     state.test = 'test';
     expect(callback).not.toBeCalled();
@@ -705,7 +705,7 @@ describe('ObservableObject type', () => {
   test('Triggers deferred change callback when modifying key', () => {
     const state = observableObject({test: 'test'});
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state).toEqual({test: 'test'});
     state.test = 'test2';
     expect(callback).not.toBeCalled();
@@ -717,7 +717,7 @@ describe('ObservableObject type', () => {
   test('Triggers deferred change callback when deleting existing key', () => {
     const state = observableObject({test: 'test'});
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state).toEqual({test: 'test'});
     delete state.test;
     expect(callback).not.toBeCalled();
@@ -729,7 +729,7 @@ describe('ObservableObject type', () => {
   test('No deferred change callback when deleting non-existent key', () => {
     const state = observableObject({});
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     delete state.test;
     expect(callback).not.toBeCalled();
     jest.advanceTimersByTime(global.FRAME_TIME);
@@ -739,7 +739,7 @@ describe('ObservableObject type', () => {
   test('Triggers deferred change callback with Object.assign', () => {
     const state = observableObject({test: 'test'});
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state).toEqual({test: 'test'});
     Object.assign(state, {test: 'test2'});
     expect(callback).not.toBeCalled();
@@ -752,8 +752,8 @@ describe('ObservableObject type', () => {
     const state = observableObject({});
     const callback1 = jest.fn();
     const callback2 = jest.fn();
-    on(state, ObservableEvents.change, callback1);
-    on(state, ObservableEvents.change, callback2);
+    on(state, observableEvents.change, callback1);
+    on(state, observableEvents.change, callback2);
     state.test = 'test';
     expect(callback1).not.toBeCalled();
     expect(callback2).not.toBeCalled();
@@ -766,17 +766,17 @@ describe('ObservableObject type', () => {
   test('Triggers deferred change callback when reobserved', () => {
     const state = observableObject({});
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     state.test = 'test';
     jest.advanceTimersByTime(global.FRAME_TIME);
     expect(callback).toHaveBeenCalledTimes(1);
     expect(state).toEqual({test: 'test'});
-    off(state, ObservableEvents.change, callback);
+    off(state, observableEvents.change, callback);
     state.test = 'test2';
     jest.advanceTimersByTime(global.FRAME_TIME);
     expect(callback).toHaveBeenCalledTimes(1);
     expect(state).toEqual({test: 'test2'});
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     state.test = 'test3';
     jest.advanceTimersByTime(global.FRAME_TIME);
     expect(callback).toHaveBeenCalledTimes(2);
@@ -787,15 +787,15 @@ describe('ObservableObject type', () => {
     const state = observableObject({});
     const callback1 = jest.fn();
     const callback2 = jest.fn();
-    on(state, ObservableEvents.change, callback1);
-    on(state, ObservableEvents.change, callback2);
+    on(state, observableEvents.change, callback1);
+    on(state, observableEvents.change, callback2);
     state.test = 'test';
     expect(callback1).not.toBeCalled();
     expect(callback2).not.toBeCalled();
     jest.advanceTimersByTime(global.FRAME_TIME);
     expect(callback1).toHaveBeenCalledTimes(1);
     expect(callback2).toHaveBeenCalledTimes(1);
-    off(state, ObservableEvents.change, callback2);
+    off(state, observableEvents.change, callback2);
     state.test = 'test2';
     jest.advanceTimersByTime(global.FRAME_TIME);
     expect(callback1).toHaveBeenCalledTimes(2);
@@ -805,7 +805,7 @@ describe('ObservableObject type', () => {
   test('Triggers deferred destroy callback', () => {
     const state = observableObject({});
     const destroyCallback = jest.fn();
-    on(state, ObservableEvents.destroy, destroyCallback);
+    on(state, observableEvents.destroy, destroyCallback);
     expect(destroyCallback).not.toBeCalled();
     destroy(state);
     expect(destroyCallback).not.toBeCalled();
@@ -816,7 +816,7 @@ describe('ObservableObject type', () => {
   test('Triggers deferred destroy callback only once', () => {
     const state = observableObject({});
     const destroyCallback = jest.fn();
-    on(state, ObservableEvents.destroy, destroyCallback);
+    on(state, observableEvents.destroy, destroyCallback);
     expect(destroyCallback).not.toBeCalled();
     destroy(state);
     expect(destroyCallback).not.toBeCalled();
@@ -832,8 +832,8 @@ describe('ObservableObject type', () => {
     const state = observableObject({});
     const changeCallback = jest.fn();
     const destroyCallback = jest.fn();
-    on(state, ObservableEvents.change, changeCallback);
-    on(state, ObservableEvents.destroy, destroyCallback);
+    on(state, observableEvents.change, changeCallback);
+    on(state, observableEvents.destroy, destroyCallback);
     state.test = 'test';
     expect(changeCallback).not.toBeCalled();
     expect(destroyCallback).not.toBeCalled();
@@ -859,7 +859,7 @@ describe('ObservableMap type', () => {
   test('Triggers deferred change callback with Map.set with different value', () => {
     const state = observableMap(new Map());
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state.size).toEqual(0);
     state.set('test', 'test');
     expect(callback).not.toBeCalled();
@@ -874,7 +874,7 @@ describe('ObservableMap type', () => {
       ['test', 'test']
     ]));
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     state.set('test', 'test');
     expect(callback).not.toBeCalled();
     jest.advanceTimersByTime(global.FRAME_TIME);
@@ -886,7 +886,7 @@ describe('ObservableMap type', () => {
       ['test', 'test']
     ]));
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state.size).toEqual(1);
     state.delete('test');
     expect(callback).not.toBeCalled();
@@ -898,7 +898,7 @@ describe('ObservableMap type', () => {
   test('No deferred change callback with Map.delete with non-existent key', () => {
     const state = observableMap(new Map());
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state.size).toEqual(0);
     state.delete('test');
     expect(callback).not.toBeCalled();
@@ -911,7 +911,7 @@ describe('ObservableMap type', () => {
       [1, 1]
     ]));
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(state.size).toEqual(1);
     state.clear();
     expect(callback).not.toBeCalled();
@@ -923,7 +923,7 @@ describe('ObservableMap type', () => {
   test('No deferred change callback with Map.clear when Map.size is 0', () => {
     const state = observableMap(new Map());
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     state.clear();
     expect(callback).not.toBeCalled();
     jest.advanceTimersByTime(global.FRAME_TIME);
@@ -944,35 +944,35 @@ describe('on() and off()', () => {
   test('Adding a new listener returns true', () => {
     const state = observable({});
     const callback = jest.fn();
-    expect(on(state, ObservableEvents.change, callback)).toEqual(true);
+    expect(on(state, observableEvents.change, callback)).toEqual(true);
   });
 
   test('Adding an exisiting listener returns false', () => {
     const state = observable({});
     const callback = jest.fn();
-    expect(on(state, ObservableEvents.change, callback)).toEqual(true);
-    expect(on(state, ObservableEvents.change, callback)).toEqual(false);
+    expect(on(state, observableEvents.change, callback)).toEqual(true);
+    expect(on(state, observableEvents.change, callback)).toEqual(false);
   });
 
   test('Removing an existing listener returns true', () => {
     const state = observable({});
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
-    expect(off(state, ObservableEvents.change, callback)).toEqual(true);
+    on(state, observableEvents.change, callback);
+    expect(off(state, observableEvents.change, callback)).toEqual(true);
   });
 
   test('Removing a non-existent listener returns false', () => {
     const state = observable({});
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
-    expect(off(state, ObservableEvents.change, callback)).toEqual(true);
-    expect(off(state, ObservableEvents.change, callback)).toEqual(false);
+    on(state, observableEvents.change, callback);
+    expect(off(state, observableEvents.change, callback)).toEqual(true);
+    expect(off(state, observableEvents.change, callback)).toEqual(false);
   });
 
   test('Removing a listener from a non-observable returns false', () => {
     const state = {};
     const callback = jest.fn();
-    expect(off(state, ObservableEvents.change, callback)).toEqual(false);
+    expect(off(state, observableEvents.change, callback)).toEqual(false);
   });
 
 });
@@ -986,7 +986,7 @@ describe('Nested callbacks', () => {
       new Map
     ]);
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(callback).not.toBeCalled();
     state[0][0] = 'test';
     jest.advanceTimersByTime(global.FRAME_TIME);
@@ -1006,7 +1006,7 @@ describe('Nested callbacks', () => {
       map: new Map
     });
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(callback).not.toBeCalled();
     state.arr[0] = 'test';
     jest.advanceTimersByTime(global.FRAME_TIME);
@@ -1026,7 +1026,7 @@ describe('Nested callbacks', () => {
       [3, new Map],
     ]));
     const callback = jest.fn();
-    on(state, ObservableEvents.change, callback);
+    on(state, observableEvents.change, callback);
     expect(callback).not.toBeCalled();
     state.get(1)[0] = 'test';
     jest.advanceTimersByTime(global.FRAME_TIME);

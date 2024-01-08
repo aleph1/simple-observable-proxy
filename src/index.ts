@@ -3,18 +3,18 @@ export type ObservableObject = {[name: string]: any;};
 export type ObservableMap = {[name: string]: any;};
 export type Observable = ObservableArray | ObservableObject| ObservableMap;// | ObservableSet;
 export type ObservableCallback = (proxy: Observable) => void;
-export const ObservableEvents = {
+export const observableEvents = {
     change: 'change',
     destroy: 'destroy',
 } as const;
-type ObservableEventKey = keyof typeof ObservableEvents;
-export type ObservableEvent = typeof ObservableEvents[ObservableEventKey];
+type ObservableEventKey = keyof typeof observableEvents;
+export type ObservableEvent = typeof observableEvents[observableEventKey];
 
 type ObservableCallbackObject = {
   change: Set<ObservableCallback>,
   destroy: Set<ObservableCallback>
 };
-export type ObservableCallbackMap = Map<Observable, ObservableCallbackObject>;
+type ObservableCallbackMap = Map<Observable, ObservableCallbackObject>;
 
 // data that is being observed
 const observables = new Set();
@@ -160,7 +160,7 @@ export const observableMap = (data: ObservableMap): ObservableMap => {
   else throw new Error('data must be a Map');
 };
 
-export const on = (observableProxy: Observable, eventType: ObservableEventKey, callback: ObservableCallback ): boolean => {
+export const on = (observableProxy: Observable, eventType: observableEventKey, callback: ObservableCallback ): boolean => {
   const observers = observersByProxy.get(observableProxy);
   if(observers && observers[eventType] && typeof callback === 'function' && !observers[eventType].has(callback)) {
     observers[eventType].add(callback);
@@ -169,7 +169,7 @@ export const on = (observableProxy: Observable, eventType: ObservableEventKey, c
   return false;
 }
 
-export const off = (observableProxy: Observable, eventType: ObservableEventKey, callback: ObservableCallback ): boolean => {
+export const off = (observableProxy: Observable, eventType: observableEventKey, callback: ObservableCallback ): boolean => {
   const observers = observersByProxy.get(observableProxy);
   return (observers && observers[eventType] && typeof callback === 'function') ? observers[eventType].delete(callback) : false;
 }
