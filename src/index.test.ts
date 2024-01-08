@@ -51,6 +51,24 @@ describe('observable()', () => {
 
 });
 
+describe('isObservable()', () => {
+
+  test('Works with observableArray', () => {
+    const state = observable([]);
+    expect(isObservable(state)).toEqual(true);
+  });
+
+  test('Works with observableObject', () => {
+    const state = observable({});
+    expect(isObservable(state)).toEqual(true);
+  });
+
+  test('Works with observableMap', () => {
+    const state = observable(new Map);
+    expect(isObservable(state)).toEqual(true);
+  });
+
+});
 
 describe('observableArray()', () => {
 
