@@ -156,6 +156,8 @@ console.log('before state changed callback');
 ```
 
 ## Migrating from 1.x or 2.x to 3.0
+The object containing event types is now `observableEvents` versus `ObservableEvents`.
+
 The `observe` and `unobserve` methods have been removed as of v3.0 and should be updated as follows:
 
 1. Where you import the `observe` and `unobserve` methods, instead import the `on` and `off` methods, and the `ObservableEvents` object.
