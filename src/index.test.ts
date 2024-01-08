@@ -594,7 +594,19 @@ describe('ObservableArray type', () => {
     expect(state).toEqual([1, 2, 3]);
   });
 
-  test('Array.reverse triggers deferred change callback ', () => {
+  test('Array.fill triggers deferred change callback', () => {
+    const state = observableArray([1, 2]);
+    const callback = jest.fn();
+    on(state, ObservableEvents.change, callback);
+    expect(state).toEqual([1, 2]);
+    state.fill(1);
+    expect(callback).not.toBeCalled();
+    jest.advanceTimersByTime(global.FRAME_TIME);
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(state).toEqual([1, 1]);
+  });
+
+  test('Array.reverse triggers deferred change callback', () => {
     const state = observableArray([1, 2, 3]);
     const callback = jest.fn();
     on(state, ObservableEvents.change, callback);
