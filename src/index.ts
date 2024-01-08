@@ -144,6 +144,8 @@ export const observable = (data: Observable): Observable => {
   throw new Error('data must be plain Object, Array, or Map');
 };
 
+export const isObservable = (observableProxy: Observable): boolean => observablesByProxy.has(observableProxy);
+
 export const observableObject = (data: ObservableObject): ObservableObject => {
   if(isPlainObject(data)) return makeObservableArrayOrObject(data) as ObservableObject;
   else throw new Error('data must be a plain Object');
