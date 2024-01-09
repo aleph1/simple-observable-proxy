@@ -32,7 +32,7 @@ import { observable } from 'simple-observable-proxy';
 Observing an object.
 
 ```js
-import { ObservableObject, ObservableEvents, on, off } from 'simple-observable-proxy';
+import { observableObject, observableEvents, on, off } from 'simple-observable-proxy';
 const stateChange = state => {
   console.log('stateChange()');
 }
