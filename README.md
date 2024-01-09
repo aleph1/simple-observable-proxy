@@ -29,7 +29,7 @@ import { observable } from 'simple-observable-proxy';
 
 ## Basic Usage
 
-Observing an object.
+Observing an object:
 
 ```js
 import { observableObject, observableEvents, on, off } from 'simple-observable-proxy';
@@ -43,7 +43,7 @@ on(state, observableEvents.change, stateChange);
 state.test = 'test2'; // in browser stateChange() will be called on requestAnimationFrame, and in Node approximately 16ms after being set
 ```
 
-Observing an array.
+Observing an array:
 
 ```js
 import { observableArray, observableEvents, on, off } from 'simple-observable-proxy';
@@ -55,7 +55,7 @@ on(state, observableEvents.change, stateChange);
 state.push(4); // in browser stateChange() will be called on requestAnimationFrame, and in Node approximately 16ms after being set
 ```
 
-Observing a map.
+Observing a map:
 
 ```js
 import { observableMap, observableEvents, on, off } from 'simple-observable-proxy';
